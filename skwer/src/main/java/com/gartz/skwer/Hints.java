@@ -43,8 +43,6 @@ public class Hints {
             if (visibleTiles.get(i).state == state) {
                 visibleTiles.get(i).setVisibility(View.GONE);
                 visibleTiles.remove(i);
-                if (visibleTiles.size() == 0)
-                    activity.nextPuzzleWithDelay();
                 break;
             }
         if (visibleTiles.size() == 0)
@@ -62,10 +60,6 @@ public class Hints {
         for (int i=states.size(); i<tiles.length; i++)
             tiles[i].setVisibility(View.GONE);
 
-    }
-
-    public static boolean areHintsVisible() {
-        return visibleTiles.size() != 0;
     }
 
     public static int getHintBackgroundColor() {
