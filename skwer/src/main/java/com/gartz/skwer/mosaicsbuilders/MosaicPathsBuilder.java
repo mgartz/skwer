@@ -1,6 +1,6 @@
 package com.gartz.skwer.mosaicsbuilders;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -12,7 +12,7 @@ import java.util.Random;
 public abstract class MosaicPathsBuilder {
     protected static final Random random = new Random();
 
-    public abstract ArrayList<Mosaic> buildMosaicPaths(int numMosaics, float width, float height, int mosaicDeformation);
+    public abstract List<Mosaic> buildMosaicPaths(int numMosaics, float width, float height, int mosaicDeformation);
 
     protected float smallTranslation(float size){
         return (-0.5f + random.nextFloat()) * 0.02f * size;

@@ -3,6 +3,7 @@ package com.gartz.skwer.mosaicsbuilders;
 import android.graphics.Path;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Martin on 5/3/2014.
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 public class CircleMosaicsBuilder extends MosaicPathsBuilder {
 
     @Override
-    public ArrayList<Mosaic> buildMosaicPaths(int numMosaics, float width, float height, int mosaicDeformation) {
+    public List<Mosaic> buildMosaicPaths(int numMosaics, float width, float height, int mosaicDeformation) {
         ArrayList<Mosaic> mosaics = new ArrayList<>();
 
         float x0 = width/2;

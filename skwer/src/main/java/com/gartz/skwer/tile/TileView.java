@@ -16,27 +16,26 @@ import com.gartz.skwer.PuzzleMaker;
  *
  */
 public abstract class TileView extends View implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener {
-    public static final int COLORS[] = {0xFFFF0080, 0xFF60DD00, 0xFF0080FF};
+    public static final int COLORS[] = {0xFFFF0080, 0xFF69D200, 0xFF0080FF};
     public int state;
     public int hintCount;
     public int puzzleCount;
+    public boolean active = true;
 
     protected static TileView[][] tiles;
     protected static int numTilesX, numTilesY;
 
     protected int x,y;
     private static BaseStateListener baseStateListener;
-    private static TileClickListener tileClickListener;
     private static SharedPreferences preferences;
-    private static PuzzleMaker puzzleMaker;
+    protected static PuzzleMaker puzzleMaker;
 
     public TileView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    public static void setup(Context context, TileView[][] tiles, BaseStateListener baseStateListener, TileClickListener tileClickListener){
+    public static void setup(Context context, TileView[][] tiles, BaseStateListener baseStateListener){
         TileView.tiles = tiles;
         TileView.baseStateListener = baseStateListener;
-        TileView.tileClickListener = tileClickListener;
         preferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
         baseStateListener.baseStateDidChange(preferences.getInt("base", 0));
         puzzleMaker = new PuzzleMaker(context);
@@ -80,16 +79,18 @@ public abstract class TileView extends View implements View.OnClickListener, Vie
     }
     public void setState(int state, int puzzleCountDelta){
         this.puzzleCount += puzzleCountDelta;
+        if (puzzleCount == -3)
+            puzzleCount = 0;
         int oldState = this.state;
         this.state = state%3;
-        updateToCurrentState(oldState != state);
+        updateToCurrentState(oldState != state || puzzleCountDelta != 0);
     }
     public void addHintCount(){
         hintCount++;
     }
 
     private void nextColor(int puzzleCountDelta){
-        setState(state+1, puzzleCountDelta);
+        setState(state + 1, puzzleCountDelta);
     }
 
     protected abstract void updateToCurrentState(boolean animated);
@@ -97,34 +98,33 @@ public abstract class TileView extends View implements View.OnClickListener, Vie
 
     @Override
     public void onClick(View v) {
-        doAction(-1);
-        hintCount--;
-        Hints.pressedTile(state);
-        tileClickListener.tileDidClick(state);
+        if (active) {
+            doAction(-1);
+            hintCount--;
+            Hints.pressedTile(state);
+        }
     }
     @Override
     public boolean onLongClick(View v) {
-        if (y == 4 || y < 2)
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    if (y == 4) {
-                        if (x < 3) {
-                            int baseState = x;
-                            for (TileView[] tile : tiles)
-                                for (TileView aTile : tile)
-                                    aTile.setState(baseState, -aTile.puzzleCount);
-                            preferences.edit().putInt("base", baseState).apply();
-                            baseStateListener.baseStateDidChange(baseState);
-                            puzzleMaker.clear(baseState, tiles);
-                        }
-                        else
-                            puzzleMaker.resetLastPuzzle(tiles, true);
-                    }
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if (y == tiles[0].length - 1) {
+                    if (x < tiles.length - 1)
+                        puzzleMaker.makePuzzle(tiles, x + 3, preferences.getInt("base", 0));
                     else
-                        puzzleMaker.makePuzzle(tiles, 1 + x + y*4, preferences.getInt("base", 0));
+                        puzzleMaker.resetLastPuzzle(tiles, true);
                 }
-            });
+                else {
+                    for (TileView[] tile : tiles)
+                        for (TileView aTile : tile)
+                            aTile.setState(state, -aTile.puzzleCount - 1);
+                    preferences.edit().putInt("base", state).apply();
+                    baseStateListener.baseStateDidChange(state);
+                    puzzleMaker.clear(state, tiles);
+                }
+            }
+        });
         return true;
     }
     @Override
@@ -138,14 +138,14 @@ public abstract class TileView extends View implements View.OnClickListener, Vie
             puzzleMaker.nextPuzzle(tiles);
     }
     private static boolean didSolveCurrentPuzzle(){
-        int baseState = preferences.getInt("base",0);
+        if (!puzzleMaker.isInPuzzle())
+            return false;
+        int baseState = preferences.getInt("base", 0);
 
         for (TileView[] tile : tiles)
             for (TileView aTile : tile)
-                if (aTile.state != baseState) {
-                    puzzleMaker.endedPuzzle();
+                if (aTile.state != baseState)
                     return false;
-                }
         return true;
     }
 
@@ -163,10 +163,14 @@ public abstract class TileView extends View implements View.OnClickListener, Vie
         preferences.edit().putInt(x + "_" + y, state).apply();
     }
 
+    public static void highlightSolution(TileView[][] tileViews) {
+        if (didSolveCurrentPuzzle())
+            for (TileView[] tile : tileViews)
+                for (TileView aTile : tile)
+                    aTile.setState(aTile.state, -10);
+    }
+
     public interface BaseStateListener{
         void baseStateDidChange(int baseState);
-    }
-    public interface TileClickListener{
-        void tileDidClick(int state);
     }
 }

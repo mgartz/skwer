@@ -47,6 +47,8 @@ public class Hints {
                     activity.nextPuzzleWithDelay();
                 break;
             }
+        if (visibleTiles.size() == 0)
+            activity.nextPuzzleWithDelay();
     }
 
     public static void setForPuzzleStates(ArrayList<Integer> states){
@@ -54,7 +56,7 @@ public class Hints {
         visibleTiles.clear();
         for (int i=0; i<states.size(); i++){
             visibleTiles.add(0,tiles[i]);
-            tiles[i].setState(states.get(i),0);
+            tiles[i].setState(states.get(i),tiles[i].puzzleCount == 0 ? 1 : 0); //Puzzle count used for illumination.
             tiles[i].setVisibility(View.VISIBLE);
         }
         for (int i=states.size(); i<tiles.length; i++)

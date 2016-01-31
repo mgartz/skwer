@@ -1,6 +1,7 @@
 package com.gartz.skwer.mosaicsbuilders;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Martin on 5/3/2014.
@@ -12,7 +13,7 @@ public class CrossMosaicsBuilder extends MosaicPathsBuilder{
     private float minX, maxX, minY, maxY;
 
     @Override
-    public ArrayList<Mosaic> buildMosaicPaths(int numMosaics, float width, float height, int mosaicDeformation) {
+    public List<Mosaic> buildMosaicPaths(int numMosaics, float width, float height, int mosaicDeformation) {
         ArrayList<Mosaic> mosaics = new ArrayList<>();
 
         float x0 = width/2;

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
-import com.gartz.skwer.tile.MosaicTileView;
 import com.gartz.skwer.tile.TileView;
 import com.gartz.skwer.gui.BackgroundView;
 import com.gartz.skwer.helper.ColorHelper;
@@ -16,8 +15,8 @@ import com.gartz.skwer.helper.ColorHelper;
  * Main Activity.
  *
  */
-public class SkwerActivity extends Activity implements TileView.BaseStateListener, TileView.TileClickListener {
-    private TileView[][] tiles = new TileView[4][5];
+public class SkwerActivity extends Activity implements TileView.BaseStateListener {
+    private TileView[][] tiles = new TileView[6][7];
     private BackgroundView backgroundView;
 
     @Override
@@ -33,28 +32,51 @@ public class SkwerActivity extends Activity implements TileView.BaseStateListene
         tiles[0][2] = (TileView) findViewById(R.id.tile_0_2);
         tiles[0][3] = (TileView) findViewById(R.id.tile_0_3);
         tiles[0][4] = (TileView) findViewById(R.id.tile_0_4);
+        tiles[0][5] = (TileView) findViewById(R.id.tile_0_5);
+        tiles[0][6] = (TileView) findViewById(R.id.tile_0_6);
 
         tiles[1][0] = (TileView) findViewById(R.id.tile_1_0);
         tiles[1][1] = (TileView) findViewById(R.id.tile_1_1);
         tiles[1][2] = (TileView) findViewById(R.id.tile_1_2);
         tiles[1][3] = (TileView) findViewById(R.id.tile_1_3);
         tiles[1][4] = (TileView) findViewById(R.id.tile_1_4);
+        tiles[1][5] = (TileView) findViewById(R.id.tile_1_5);
+        tiles[1][6] = (TileView) findViewById(R.id.tile_1_6);
 
         tiles[2][0] = (TileView) findViewById(R.id.tile_2_0);
         tiles[2][1] = (TileView) findViewById(R.id.tile_2_1);
         tiles[2][2] = (TileView) findViewById(R.id.tile_2_2);
         tiles[2][3] = (TileView) findViewById(R.id.tile_2_3);
         tiles[2][4] = (TileView) findViewById(R.id.tile_2_4);
+        tiles[2][5] = (TileView) findViewById(R.id.tile_2_5);
+        tiles[2][6] = (TileView) findViewById(R.id.tile_2_6);
 
         tiles[3][0] = (TileView) findViewById(R.id.tile_3_0);
         tiles[3][1] = (TileView) findViewById(R.id.tile_3_1);
         tiles[3][2] = (TileView) findViewById(R.id.tile_3_2);
         tiles[3][3] = (TileView) findViewById(R.id.tile_3_3);
         tiles[3][4] = (TileView) findViewById(R.id.tile_3_4);
+        tiles[3][5] = (TileView) findViewById(R.id.tile_3_5);
+        tiles[3][6] = (TileView) findViewById(R.id.tile_3_6);
+
+        tiles[4][0] = (TileView) findViewById(R.id.tile_4_0);
+        tiles[4][1] = (TileView) findViewById(R.id.tile_4_1);
+        tiles[4][2] = (TileView) findViewById(R.id.tile_4_2);
+        tiles[4][3] = (TileView) findViewById(R.id.tile_4_3);
+        tiles[4][4] = (TileView) findViewById(R.id.tile_4_4);
+        tiles[4][5] = (TileView) findViewById(R.id.tile_4_5);
+        tiles[4][6] = (TileView) findViewById(R.id.tile_4_6);
+
+        tiles[5][0] = (TileView) findViewById(R.id.tile_5_0);
+        tiles[5][1] = (TileView) findViewById(R.id.tile_5_1);
+        tiles[5][2] = (TileView) findViewById(R.id.tile_5_2);
+        tiles[5][3] = (TileView) findViewById(R.id.tile_5_3);
+        tiles[5][4] = (TileView) findViewById(R.id.tile_5_4);
+        tiles[5][5] = (TileView) findViewById(R.id.tile_5_5);
+        tiles[5][6] = (TileView) findViewById(R.id.tile_5_6);
 
 
-
-        TileView.setup(this, tiles, this, this);
+        TileView.setup(this, tiles, this);
         Hints.setup(this, (android.view.ViewGroup) findViewById(R.id.hints));
         for (int i=0; i<tiles.length; i++)
             for (int j=0; j<tiles[i].length; j++)
@@ -82,9 +104,9 @@ public class SkwerActivity extends Activity implements TileView.BaseStateListene
 
             View tilesLayout = findViewById(R.id.tiles_layout);
 
-            int width = getResources().getDisplayMetrics().widthPixels * 5 / 6;
+            int width = getResources().getDisplayMetrics().widthPixels;
             tilesLayout.getLayoutParams().width = width;
-            tilesLayout.getLayoutParams().height = width * 5 / 4;
+            tilesLayout.getLayoutParams().height = width * tiles[0].length / tiles.length;
         }
     }
 
@@ -92,13 +114,10 @@ public class SkwerActivity extends Activity implements TileView.BaseStateListene
     public void baseStateDidChange(int baseState) {
         backgroundView.setColor(ColorHelper.interp(TileView.COLORS[baseState], 0xFF000000, 0.9f));
     }
-    @Override
-    public void tileDidClick(int state) {
-
-    }
 
     private Handler handler = new Handler();
     public void nextPuzzleWithDelay() {
+        TileView.highlightSolution(tiles);
         handler.removeCallbacks(nextPuzzleRunnable);
         handler.postDelayed(nextPuzzleRunnable,1000);
     }

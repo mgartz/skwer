@@ -23,15 +23,27 @@ public abstract class AnimatedTileView extends TileView {
     protected boolean isAnimating;
     private long animationStartTime;
     private long animationPeriod;
+    protected float currentDimFactor;
+    private float origDimFactor;
+    private float targetDimFactor;
 
     public AnimatedTileView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     protected void updateToCurrentState(boolean animated) {
+        targetColor = COLORS[state];
+        if (puzzleMaker.isInPuzzle()) {
+            if (active)
+                targetDimFactor = puzzleCount == 0 ? 0.25f : 0;
+            else
+                targetDimFactor = puzzleCount == 0 ? 0.75f : 0.5f;
+        }
+        else
+            targetDimFactor = 0.75f * (Math.abs(x - numTilesX / 2f + 0.5f) / numTilesX + Math.abs(y - numTilesY / 2f + 0.5f) / numTilesY);
         if (animated) {
-            targetColor = COLORS[state];
             origColor = currentColor;
+            origDimFactor = currentDimFactor;
             isAnimating = true;
             animationStartTime = System.currentTimeMillis();
             animationPeriod = 300;
@@ -54,6 +66,7 @@ public abstract class AnimatedTileView extends TileView {
                 t = 1;
             }
             currentColor = ColorHelper.interp(origColor, targetColor, t);
+            currentDimFactor = origDimFactor * (1-t) + targetDimFactor * t;
             invalidate();
         }
         if (hintCount > 0){
@@ -63,8 +76,10 @@ public abstract class AnimatedTileView extends TileView {
         else
             setBackgroundColor(0x00000000);
 
-        if (!isAnimating && hintCount == 0 && !isSelected && puzzleCount >= 0)
-            currentColor = COLORS[state];
+        if (!isAnimating && hintCount == 0 && !isSelected && puzzleCount >= 0) {
+            currentColor = targetColor;
+            currentDimFactor = targetDimFactor;
+        }
     }
 
     @Override

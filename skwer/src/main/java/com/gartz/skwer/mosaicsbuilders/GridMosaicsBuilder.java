@@ -1,6 +1,7 @@
 package com.gartz.skwer.mosaicsbuilders;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Martin on 5/3/2014.
@@ -11,12 +12,12 @@ import java.util.ArrayList;
 public class GridMosaicsBuilder extends MosaicPathsBuilder {
 
     @Override
-    public ArrayList<Mosaic> buildMosaicPaths(int numMosaics, float width, float height, int mosaicDeformation) {
+    public List<Mosaic> buildMosaicPaths(int numMosaics, float width, float height, int mosaicDeformation) {
         ArrayList<Mosaic> mosaics = new ArrayList<>();
         float[][][] vertices;
 
-        float wn = width /numMosaics;
-        float hn = height /numMosaics;
+        float wn = width / numMosaics;
+        float hn = height / numMosaics;
 
         float strokeSize = width / 100f;
 

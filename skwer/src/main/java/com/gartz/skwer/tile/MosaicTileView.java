@@ -6,14 +6,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 
-import com.gartz.skwer.Hints;
+import com.gartz.skwer.helper.ColorHelper;
 import com.gartz.skwer.mosaicsbuilders.Mosaic;
 import com.gartz.skwer.mosaicsbuilders.MosaicPathsBuilder;
 import com.gartz.skwer.mosaicsbuilders.CircleMosaicsBuilder;
 import com.gartz.skwer.mosaicsbuilders.CrossMosaicsBuilder;
 import com.gartz.skwer.mosaicsbuilders.GridMosaicsBuilder;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Martin on 5/1/2014.
@@ -28,13 +28,12 @@ public class MosaicTileView extends AnimatedTileView {
     protected static int numMosaics = 5;
 
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private ArrayList<Mosaic> markedMosaics = new ArrayList<>();
-    private ArrayList<Mosaic> normalMosaics = new ArrayList<>();
-    private ArrayList<Mosaic> errorMosaics = new ArrayList<>();
-    private MosaicPathsBuilder gridMosaicsBuilder = new GridMosaicsBuilder();
-    private MosaicPathsBuilder circleMosaicsBuilder = new CircleMosaicsBuilder();
-    private MosaicPathsBuilder crossMosaicsBuilder = new CrossMosaicsBuilder();
-
+    private List<Mosaic> markedMosaics;
+    private List<Mosaic> normalMosaics;
+    private List<Mosaic> errorMosaics;
+    private MosaicPathsBuilder gridMosaicsBuilder;
+    private MosaicPathsBuilder circleMosaicsBuilder;
+    private MosaicPathsBuilder crossMosaicsBuilder;
 
     public MosaicTileView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -42,8 +41,14 @@ public class MosaicTileView extends AnimatedTileView {
 
     @Override
     public void recalculateRendering() {
+        if (gridMosaicsBuilder == null)
+            gridMosaicsBuilder = new GridMosaicsBuilder();
         normalMosaics = gridMosaicsBuilder.buildMosaicPaths(numMosaics, getWidth(), getHeight(), mosaicDeformation);
+        if (circleMosaicsBuilder == null)
+            circleMosaicsBuilder = new CircleMosaicsBuilder();
         markedMosaics = circleMosaicsBuilder.buildMosaicPaths(numMosaics, getWidth(), getHeight(), mosaicDeformation);
+        if (crossMosaicsBuilder == null)
+            crossMosaicsBuilder = new CrossMosaicsBuilder();
         errorMosaics = crossMosaicsBuilder.buildMosaicPaths(numMosaics, getWidth(), getHeight(), mosaicDeformation);
         for (Mosaic path : normalMosaics)
             path.setRandomDeltas(20 * colorDeviation);
@@ -66,22 +71,27 @@ public class MosaicTileView extends AnimatedTileView {
         super.onDraw(canvas);
         float scale = (1 - gapSize/25f);
         canvas.scale(scale,scale,getWidth()/2, getHeight()/2);
-        ArrayList<Mosaic> paths = normalMosaics;
-        if (Hints.areHintsVisible()) {
-            if (puzzleCount >= 3)
-                paths = markedMosaics;
-            else if (puzzleCount < 0)
-                paths = errorMosaics;
-        }
+        List<Mosaic> paths = getCurrentPaths();
 
         for (Mosaic path : paths) {
             if (isAnimating)
                 path.setRandomDeltas(20 * colorDeviation);
             int color = colorSum(currentColor, path.deltaR, path.deltaG, path.deltaB);
+            color = ColorHelper.interp(color, 0xFF000000, currentDimFactor);
             paint.setColor(color);
             canvas.drawPath(path, paint);
         }
 
+    }
+
+    protected List<Mosaic> getCurrentPaths() {
+        if (puzzleMaker.isInPuzzle() && puzzleCount > -3) {
+            if (puzzleCount >= 3)
+                return markedMosaics;
+            else if (puzzleCount < 0)
+                return errorMosaics;
+        }
+        return normalMosaics;
     }
 
     private int colorSum(int color, int deltaR, int deltaG, int deltaB){
