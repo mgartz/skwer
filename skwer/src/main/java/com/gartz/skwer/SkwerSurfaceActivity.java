@@ -1,8 +1,9 @@
 package com.gartz.skwer;
 
 import android.app.Activity;
+import android.opengl.GLES20;
+import android.opengl.Matrix;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 
 import com.gartz.skwer.tile.TileView;
@@ -14,32 +15,31 @@ import com.gartz.skwer.tile.TileView;
  *
  */
 public class SkwerSurfaceActivity extends Activity implements TileView.BaseStateListener {
-    SkwerGLSurfaceView surfaceView;
+    GameGLSurfaceView surfaceView;
+    Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        surfaceView = new SkwerGLSurfaceView(this);
+        surfaceView = new GameGLSurfaceView(this);
         setContentView(surfaceView);
 
-        surfaceView.renderer.setOnSurfaceCreatedListener(new SkwerGLRenderer.OnSurfaceCreatedListener() {
+        game = new SkwerGame();
+
+        surfaceView.renderer.setOnSurfaceCreatedListener(new GameGLRenderer.OnSurfaceCreatedListener() {
             @Override
             public void onSurfaceCreated() {
-                GameObject root = new GameObject() {
-                    @Override
-                    public void onDraw(float[] mvpMatrix) {
-                        // TODO
-                    }
-                };
-                MosaicTile child = new MosaicTile(0, 0);
-                child.drawRosetta = true;
-                root.addChild(child);
-                MosaicTile child1 = new MosaicTile(1, 1);
-                child1.drawError = true;
-                root.addChild(child1);
-                root.addChild(new MosaicTile(2,2));
-                surfaceView.renderer.setRoot(root);
+                game.setup(SkwerSurfaceActivity.this, surfaceView);
+            }
+        });
+        surfaceView.renderer.setOnSurfaceChangedListener(new GameGLRenderer.OnSurfaceChangedListener() {
+            @Override
+            public void onSurfaceChanged(float[] projectionMatrix, int width, int height) {
+                GLES20.glViewport(0, 0, width, height);
+                float ratio = (float) height / width;
+                float s = SkwerGame.NUM_TILES_X * (1 + SkwerGame.GAP) / 2f;
+                Matrix.frustumM(projectionMatrix, 0, -s, s, -ratio * s, ratio * s, 1, 2);
             }
         });
     }

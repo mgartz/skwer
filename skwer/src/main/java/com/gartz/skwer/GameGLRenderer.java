@@ -31,7 +31,7 @@ import android.opengl.Matrix;
  *   <li>{@link android.opengl.GLSurfaceView.Renderer#onSurfaceChanged}</li>
  * </ul>
  */
-public class SkwerGLRenderer implements GLSurfaceView.Renderer {
+public class GameGLRenderer implements GLSurfaceView.Renderer {
 
     public static int loadShader(int type, String shaderCode){
         int shader = GLES20.glCreateShader(type);
@@ -57,12 +57,13 @@ public class SkwerGLRenderer implements GLSurfaceView.Renderer {
                     "  gl_FragColor = fragColor;" +
                     "}";
 
-    private final float[] mMVPMatrix = new float[16];
-    private final float[] mProjectionMatrix = new float[16];
-    private final float[] mViewMatrix = new float[16];
+    private final float[] mvpMatrix = new float[16];
+    private final float[] projectionMatrix = new float[16];
+    private final float[] viewMatrix = new float[16];
 
     private GameObject root;
     private OnSurfaceCreatedListener onSurfaceCreatedListener;
+    private OnSurfaceChangedListener onSurfaceChangedListener;
 
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -74,18 +75,16 @@ public class SkwerGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 1, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+        Matrix.setLookAtM(viewMatrix, 0, 0, 0, 1, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
         if (root != null)
-            root.draw(mMVPMatrix);
+            root.draw(mvpMatrix);
     }
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
-        GLES20.glViewport(0, 0, width, height);
-        float ratio = (float) width / height;
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio * Game.numTilesX, ratio * Game.numTilesX, -1f * Game.numTilesX, 1f * Game.numTilesX, 1, 2);
+        onSurfaceChangedListener.onSurfaceChanged(projectionMatrix, width, height);
     }
 
     public void setRoot(GameObject root) {
@@ -94,8 +93,14 @@ public class SkwerGLRenderer implements GLSurfaceView.Renderer {
     public void setOnSurfaceCreatedListener(OnSurfaceCreatedListener onSurfaceCreatedListener) {
         this.onSurfaceCreatedListener = onSurfaceCreatedListener;
     }
+    public void setOnSurfaceChangedListener(OnSurfaceChangedListener onSurfaceChangedListener) {
+        this.onSurfaceChangedListener = onSurfaceChangedListener;
+    }
 
     public interface OnSurfaceCreatedListener {
         void onSurfaceCreated();
+    }
+    public interface OnSurfaceChangedListener {
+        void onSurfaceChanged(float[] projectionMatrix, int width, int height);
     }
 }

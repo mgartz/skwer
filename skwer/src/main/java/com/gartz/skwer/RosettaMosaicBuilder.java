@@ -13,12 +13,9 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
 
 
     @Override
-    public Mosaic buildMosaic(int offsetX, int offsetY) {
+    public Mosaic buildMosaic(float offsetX, float offsetY) {
         Mosaic mosaic = new Mosaic();
         List<Polygon> polygons = new ArrayList<>();
-
-        float x0 = offsetX;
-        float y0 = offsetY;
 
         float radius0 = 0.05f;
         float radius1 = 0.08f;
@@ -31,12 +28,12 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
         float radius8 = 0.8f;
 
         float thetaOffset = (float) Math.PI;
-        addCircularPaths(polygons, x0, y0, radius7, radius8, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 3.0), true);
-        addCircularPaths(polygons, x0, y0, radius5, radius6, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 2.5), false);
-        addCircularPaths(polygons, x0, y0, radius3, radius4, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 1.8), false);
-        addCircularPaths(polygons, x0, y0, radius1, radius2, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 1.5), false);
+        addCircularPaths(polygons, offsetX, offsetY, radius7, radius8, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 3.0), true);
+        addCircularPaths(polygons, offsetX, offsetY, radius5, radius6, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 2.5), false);
+        addCircularPaths(polygons, offsetX, offsetY, radius3, radius4, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 1.8), false);
+        addCircularPaths(polygons, offsetX, offsetY, radius1, radius2, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 1.5), false);
 
-        addCenterQuad(polygons, x0, y0, radius0);
+        addCenterQuad(polygons, offsetX, offsetY, radius0);
 
         mosaic.setQuads(polygons);
         return mosaic;

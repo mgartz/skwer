@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class GridMosaicBuilder extends MosaicBuilder{
 
     @Override
-    public Mosaic buildMosaic(int offsetX, int offsetY) {
+    public Mosaic buildMosaic(float offsetX, float offsetY) {
         ArrayList<Polygon> polygons = new ArrayList<>();
         float[][][] vertices;
 

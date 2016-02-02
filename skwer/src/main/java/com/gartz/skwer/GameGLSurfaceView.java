@@ -13,10 +13,10 @@ import javax.microedition.khronos.egl.EGLDisplay;
  * The surface view.
  *
  */
-public class SkwerGLSurfaceView extends GLSurfaceView{
-    public final SkwerGLRenderer renderer = new SkwerGLRenderer();
+public class GameGLSurfaceView extends GLSurfaceView{
+    public final GameGLRenderer renderer = new GameGLRenderer();
 
-    public SkwerGLSurfaceView(Context context){
+    public GameGLSurfaceView(Context context){
         super(context);
 
         setEGLContextClientVersion(2);

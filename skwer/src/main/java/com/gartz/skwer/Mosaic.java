@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,17 +19,17 @@ public class Mosaic {
     private static final int COORDS_PER_VERTEX = 3;
     private static final int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
 
-    public float[] vertices;
-    public float[] colors;
-    public short[] drawList;
+    List<Polygon> polygons;
 
-    private FloatBuffer verticesBuffer;
-    private FloatBuffer colorsBuffer;
-    private ShortBuffer drawListBuffer;
+    public FloatBuffer verticesBuffer;
+    public FloatBuffer colorsBuffer;
+    public ShortBuffer drawListBuffer;
 
     private int program;
 
     public void setQuads(List<Polygon> polygons) {
+        this.polygons = polygons;
+
         short totalVertices = 0;
         short totalTriangles = 0;
         for (Polygon polygon : polygons) {
@@ -40,18 +39,19 @@ public class Mosaic {
             totalTriangles += numVertices - 2;
         }
 
-        vertices = new float[totalVertices * Polygon.COORDS_PER_VERTEX];
-        colors = new float[totalVertices * Polygon.CHANNELS_PER_COLOR];
-        drawList = new short[totalTriangles * 3];
+        float[] vertices = new float[totalVertices * Polygon.COORDS_PER_VERTEX];
+        float[] colors = new float[totalVertices * Polygon.CHANNELS_PER_COLOR];
+        short[] drawList = new short[totalTriangles * 3];
+        setupBuffersAndShaders(vertices, colors, drawList);
 
         for (Polygon polygon : polygons) {
             polygon.setupDrawIndices();
             polygon.update();
         }
-        setupBuffersAndShaders();
+        setColor(0xFFFF0080);
     }
 
-    private void setupBuffersAndShaders() {
+    private void setupBuffersAndShaders(float[] vertices, float[] colors, short[] drawList) {
         if (vertices.length > 0) {
             ByteBuffer vb = ByteBuffer.allocateDirect(vertices.length * 4);
             vb.order(ByteOrder.nativeOrder());
@@ -71,12 +71,12 @@ public class Mosaic {
             colorsBuffer.put(colors);
             colorsBuffer.position(0);
 
-            int vertexShader = SkwerGLRenderer.loadShader(
+            int vertexShader = GameGLRenderer.loadShader(
                     GLES20.GL_VERTEX_SHADER,
-                    SkwerGLRenderer.VERTEX_SHADER_CODE);
-            int fragmentShader = SkwerGLRenderer.loadShader(
+                    GameGLRenderer.VERTEX_SHADER_CODE);
+            int fragmentShader = GameGLRenderer.loadShader(
                     GLES20.GL_FRAGMENT_SHADER,
-                    SkwerGLRenderer.FRAGMENT_SHADER_CODE);
+                    GameGLRenderer.FRAGMENT_SHADER_CODE);
 
             program = GLES20.glCreateProgram();             // create empty OpenGL Program
             GLES20.glAttachShader(program, vertexShader);   // add the vertex shader to program
@@ -86,7 +86,13 @@ public class Mosaic {
     }
 
     public void draw(float[] mvpMatrix) {
+        for (Polygon polygon : polygons)
+            polygon.update();
+
         GLES20.glUseProgram(program);
+        verticesBuffer.position(0);
+        colorsBuffer.position(0);
+        drawListBuffer.position(0);
 
         int positionHandle = GLES20.glGetAttribLocation(program, "vPosition");
         GLES20.glEnableVertexAttribArray(positionHandle);
@@ -113,11 +119,16 @@ public class Mosaic {
 
         GLES20.glDrawElements(
                 GLES20.GL_TRIANGLES,
-                drawList.length,
+                drawListBuffer.remaining(),
                 GLES20.GL_UNSIGNED_SHORT,
                 drawListBuffer);
 
         GLES20.glDisableVertexAttribArray(positionHandle);
         GLES20.glDisableVertexAttribArray(colorHandle);
+    }
+
+    public void setColor(int color) {
+        for (Polygon polygon : polygons)
+            polygon.setColor(color, 60);
     }
 }

@@ -14,10 +14,11 @@ public abstract class MosaicBuilder {
 
     Random random = new Random();
 
-    public abstract Mosaic buildMosaic(int offsetX, int offsetY);
+    public abstract Mosaic buildMosaic(float offsetX, float offsetY);
 
 
     protected float smallTranslation(){
-        return (-0.5f + random.nextFloat()) * 0.02f;
+//        return (-0.5f + random.nextFloat()) * 0.02f;
+        return 0;
     }
 }

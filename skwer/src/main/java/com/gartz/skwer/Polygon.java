@@ -16,21 +16,20 @@ public class Polygon {
     public static byte COORDS_PER_VERTEX = 3;
     public static byte CHANNELS_PER_COLOR = 4;
 
+    static Random random = new Random();
+
     Mosaic mosaic;
     short vertexOffset;
     short drawListOffset;
 
     private boolean closed;
 
-    private int color;
+    private int baseColor;
+    private float[] color = new float[4];
     private List<PointF> vertices = new ArrayList<>();
 
     private boolean verticesChanged = true;
     private boolean colorChanged = true;
-
-    public Polygon() {
-        color = 0xFFFF0080;
-    }
 
     public void addVertex(float x, float y) {
         if (!closed)
@@ -49,32 +48,28 @@ public class Polygon {
     }
 
     public void setupDrawIndices() {
+        mosaic.drawListBuffer.position(drawListOffset * 3);
         for (int i=0; i<vertices.size()-2; i++) {
-            mosaic.drawList[(drawListOffset + i) * 3] = vertexOffset;
-            mosaic.drawList[(drawListOffset + i) * 3 + 1] = (short) (vertexOffset + 1 + i);
-            mosaic.drawList[(drawListOffset + i) * 3 + 2] = (short) (vertexOffset + 2 + i);
+            mosaic.drawListBuffer.put(vertexOffset);
+            mosaic.drawListBuffer.put((short) (vertexOffset + 1 + i));
+            mosaic.drawListBuffer.put((short) (vertexOffset + 2 + i));
         }
     }
 
     public void update() {
         if (verticesChanged) {
+            mosaic.verticesBuffer.position(vertexOffset * COORDS_PER_VERTEX);
             for (int i=0; i<vertices.size(); i++) {
-                mosaic.vertices[(vertexOffset + i) * COORDS_PER_VERTEX] = vertices.get(i).x;
-                mosaic.vertices[(vertexOffset + i) * COORDS_PER_VERTEX + 1] = vertices.get(i).y;
-                mosaic.vertices[(vertexOffset + i) * COORDS_PER_VERTEX + 2] = 0;
+                mosaic.verticesBuffer.put(vertices.get(i).x);
+                mosaic.verticesBuffer.put(vertices.get(i).y);
+                mosaic.verticesBuffer.put(0);
             }
             verticesChanged = false;
         }
         if (colorChanged) {
-            float[] c = {
-                    1f * ((color >> 0x10) & 0xFF) / 0xFF,
-                    1f * ((color >> 0x8) & 0xFF) / 0xFF,
-                    1f * (color & 0xFF) / 0xFF,
-                    1f * ((color >> 0x18) & 0xFF) / 0xFF
-            };
+            mosaic.colorsBuffer.position(vertexOffset * CHANNELS_PER_COLOR);
             for (int i=0; i< vertices.size(); i++)
-                for (int j=0; j<CHANNELS_PER_COLOR; j++)
-                    mosaic.colors[vertexOffset * CHANNELS_PER_COLOR + i * CHANNELS_PER_COLOR + j] = c[j];
+                mosaic.colorsBuffer.put(color);
             colorChanged = false;
         }
     }
@@ -85,9 +80,15 @@ public class Polygon {
             verticesChanged = true;
         }
     }
-    public void setColor(int color) {
-        if (this.color != color) {
-            this.color = color;
+    public void setColor(int color, int maxRandomDelta) {
+        if (this.baseColor != color) {
+            baseColor = color;
+            int randomDelta = random.nextInt(2 * maxRandomDelta + 1) - maxRandomDelta;
+
+            this.color[0] = 1f * Math.max(0, Math.min(0xFF, ((baseColor >> 0x10) & 0xFF) + randomDelta)) / 0xFF;
+            this.color[1] = 1f * Math.max(0, Math.min(0xFF, ((baseColor >> 0x8) & 0xFF) + randomDelta)) / 0xFF;
+            this.color[2] = 1f * Math.max(0, Math.min(0xFF, (baseColor & 0xFF) + randomDelta)) / 0xFF;
+            this.color[3] = 1f * ((color >> 0x18) & 0xFF) / 0xFF;
             colorChanged = true;
         }
     }

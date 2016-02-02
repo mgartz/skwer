@@ -13,34 +13,31 @@ public class ErrorMosaicBuilder extends MosaicBuilder{
     private float minX, maxX, minY, maxY;
 
     @Override
-    public Mosaic buildMosaic(int offsetX, int offsetY) {
+    public Mosaic buildMosaic(float offsetX, float offsetY) {
         List<Polygon> polygons = new ArrayList<>();
 
-        float x0 = offsetX;
-        float y0 = offsetY;
-
-        minX = x0 - 0.5f;
-        maxX = x0 + 0.5f;
-        minY = y0 - 0.5f;
-        maxY = y0 + 0.5f;
+        minX = offsetX - 0.5f;
+        maxX = offsetX + 0.5f;
+        minY = offsetY - 0.5f;
+        maxY = offsetY + 0.5f;
 
         float mosaicSize = 0.5f  / QUADS_PER_ROW;
         Polygon polygon = new Polygon();
-        polygon.addVertex(x0 - mosaicSize, y0);
-        polygon.addVertex(x0, y0 - mosaicSize);
-        polygon.addVertex(x0 + mosaicSize, y0);
-        polygon.addVertex(x0, y0 + mosaicSize);
+        polygon.addVertex(offsetX - mosaicSize, offsetY);
+        polygon.addVertex(offsetX, offsetY - mosaicSize);
+        polygon.addVertex(offsetX + mosaicSize, offsetY);
+        polygon.addVertex(offsetX, offsetY + mosaicSize);
         polygons.add(polygon);
 
-        addCrossPaths(polygons, mosaicSize, x0, y0, -1, -1);
-        addCrossPaths(polygons, mosaicSize, x0, y0, -1,  1);
-        addCrossPaths(polygons, mosaicSize, x0, y0,  1, -1);
-        addCrossPaths(polygons, mosaicSize, x0, y0, 1, 1);
+        addCrossPaths(polygons, mosaicSize, offsetX, offsetY, -1, -1);
+        addCrossPaths(polygons, mosaicSize, offsetX, offsetY, -1,  1);
+        addCrossPaths(polygons, mosaicSize, offsetX, offsetY,  1, -1);
+        addCrossPaths(polygons, mosaicSize, offsetX, offsetY, 1, 1);
 
-        addPlusPaths(polygons, mosaicSize, x0, y0, -1, true);
-        addPlusPaths(polygons, mosaicSize, x0, y0,  1, true);
-        addPlusPaths(polygons, mosaicSize, x0, y0, -1, false);
-        addPlusPaths(polygons, mosaicSize, x0, y0,  1, false);
+        addPlusPaths(polygons, mosaicSize, offsetX, offsetY, -1, true);
+        addPlusPaths(polygons, mosaicSize, offsetX, offsetY,  1, true);
+        addPlusPaths(polygons, mosaicSize, offsetX, offsetY, -1, false);
+        addPlusPaths(polygons, mosaicSize, offsetX, offsetY,  1, false);
 
         Mosaic mosaic = new Mosaic();
         mosaic.setQuads(polygons);
