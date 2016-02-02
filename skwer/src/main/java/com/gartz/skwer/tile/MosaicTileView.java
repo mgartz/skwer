@@ -73,6 +73,8 @@ public class MosaicTileView extends AnimatedTileView {
         canvas.scale(scale,scale,getWidth()/2, getHeight()/2);
         List<Mosaic> paths = getCurrentPaths();
 
+        if (x == 0 && y == 0)
+            System.out.println(System.currentTimeMillis());
         for (Mosaic path : paths) {
             if (isAnimating)
                 path.setRandomDeltas(20 * colorDeviation);
