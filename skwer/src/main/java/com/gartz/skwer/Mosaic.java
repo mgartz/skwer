@@ -88,10 +88,6 @@ public class Mosaic {
     public void draw(float[] mvpMatrix) {
         GLES20.glUseProgram(program);
 
-        System.out.println(Arrays.toString(vertices));
-        System.out.println(Arrays.toString(drawList));
-        System.out.println(Arrays.toString(colors));
-
         int positionHandle = GLES20.glGetAttribLocation(program, "vPosition");
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(
