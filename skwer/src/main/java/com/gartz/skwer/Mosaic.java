@@ -6,12 +6,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by gartz on 2/1/16.
  *
- * An collection of quadrilaterals and circles for opengl rendering.
+ * An collection of polygons for opengl rendering.
  *
  */
 public class Mosaic {
@@ -19,55 +20,56 @@ public class Mosaic {
     private static final int COORDS_PER_VERTEX = 3;
     private static final int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
 
-    public float[] quadVertices;
-    public float[] quadColors;
-    private short[] quadDrawList;
+    public float[] vertices;
+    public float[] colors;
+    public short[] drawList;
 
-    private FloatBuffer quadVerticesBuffer;
-    private FloatBuffer quadColorsBuffer;
-    private ShortBuffer quadDrawListBuffer;
+    private FloatBuffer verticesBuffer;
+    private FloatBuffer colorsBuffer;
+    private ShortBuffer drawListBuffer;
 
-    private int quadProgram;
+    private int program;
 
-    public void setQuads(List<Quad> quads) {
-        quadVertices = new float[Quad.VERTICES_PER_QUAD * Quad.COORDS_PER_VERTEX * quads.size()];
-        quadColors = new float[Quad.COLORS_PER_QUAD * Quad.CHANNELS_PER_COLOR * quads.size()];
-        quadDrawList = new short[6 * quads.size()];
-        for (short i=0; i<quads.size(); i++) {
-            Quad quad = quads.get(i);
-            quad.mosaic = this;
-            quad.offset = i;
-            quad.update();
+    public void setQuads(List<Polygon> polygons) {
+        short totalVertices = 0;
+        short totalTriangles = 0;
+        for (Polygon polygon : polygons) {
+            short numVertices = polygon.getNumVertices();
+            polygon.close(this, totalVertices, totalTriangles);
+            totalVertices += numVertices;
+            totalTriangles += numVertices - 2;
+        }
 
-            quadDrawList[i * 6] = (short) (i*4);
-            quadDrawList[i * 6 + 1] = (short) (i*4 + 1);
-            quadDrawList[i * 6 + 2] = (short) (i*4 + 2);
-            quadDrawList[i * 6 + 3] = (short) (i*4 + 2);
-            quadDrawList[i * 6 + 4] = (short) (i*4 + 1);
-            quadDrawList[i * 6 + 5] = (short) (i*4 + 3);
+        vertices = new float[totalVertices * Polygon.COORDS_PER_VERTEX];
+        colors = new float[totalVertices * Polygon.CHANNELS_PER_COLOR];
+        drawList = new short[totalTriangles * 3];
+
+        for (Polygon polygon : polygons) {
+            polygon.setupDrawIndices();
+            polygon.update();
         }
         setupBuffersAndShaders();
     }
 
     private void setupBuffersAndShaders() {
-        if (quadVertices.length > 0) {
-            ByteBuffer vb = ByteBuffer.allocateDirect(quadVertices.length * 4);
+        if (vertices.length > 0) {
+            ByteBuffer vb = ByteBuffer.allocateDirect(vertices.length * 4);
             vb.order(ByteOrder.nativeOrder());
-            quadVerticesBuffer = vb.asFloatBuffer();
-            quadVerticesBuffer.put(quadVertices);
-            quadVerticesBuffer.position(0);
+            verticesBuffer = vb.asFloatBuffer();
+            verticesBuffer.put(vertices);
+            verticesBuffer.position(0);
 
-            ByteBuffer dlb = ByteBuffer.allocateDirect(quadDrawList.length * 2);
+            ByteBuffer dlb = ByteBuffer.allocateDirect(drawList.length * 2);
             dlb.order(ByteOrder.nativeOrder());
-            quadDrawListBuffer = dlb.asShortBuffer();
-            quadDrawListBuffer.put(quadDrawList);
-            quadDrawListBuffer.position(0);
+            drawListBuffer = dlb.asShortBuffer();
+            drawListBuffer.put(drawList);
+            drawListBuffer.position(0);
 
-            ByteBuffer cb = ByteBuffer.allocateDirect(quadColors.length * 4);
+            ByteBuffer cb = ByteBuffer.allocateDirect(colors.length * 4);
             cb.order(ByteOrder.nativeOrder());
-            quadColorsBuffer = cb.asFloatBuffer();
-            quadColorsBuffer.put(quadColors);
-            quadColorsBuffer.position(0);
+            colorsBuffer = cb.asFloatBuffer();
+            colorsBuffer.put(colors);
+            colorsBuffer.position(0);
 
             int vertexShader = SkwerGLRenderer.loadShader(
                     GLES20.GL_VERTEX_SHADER,
@@ -76,17 +78,21 @@ public class Mosaic {
                     GLES20.GL_FRAGMENT_SHADER,
                     SkwerGLRenderer.FRAGMENT_SHADER_CODE);
 
-            quadProgram = GLES20.glCreateProgram();             // create empty OpenGL Program
-            GLES20.glAttachShader(quadProgram, vertexShader);   // add the vertex shader to program
-            GLES20.glAttachShader(quadProgram, fragmentShader); // add the fragment shader to program
-            GLES20.glLinkProgram(quadProgram);                  // create OpenGL program executables
+            program = GLES20.glCreateProgram();             // create empty OpenGL Program
+            GLES20.glAttachShader(program, vertexShader);   // add the vertex shader to program
+            GLES20.glAttachShader(program, fragmentShader); // add the fragment shader to program
+            GLES20.glLinkProgram(program);                  // create OpenGL program executables
         }
     }
 
     public void draw(float[] mvpMatrix) {
-        GLES20.glUseProgram(quadProgram);
+        GLES20.glUseProgram(program);
 
-        int positionHandle = GLES20.glGetAttribLocation(quadProgram, "vPosition");
+        System.out.println(Arrays.toString(vertices));
+        System.out.println(Arrays.toString(drawList));
+        System.out.println(Arrays.toString(colors));
+
+        int positionHandle = GLES20.glGetAttribLocation(program, "vPosition");
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(
                 positionHandle,
@@ -94,9 +100,9 @@ public class Mosaic {
                 GLES20.GL_FLOAT,
                 false,
                 VERTEX_STRIDE,
-                quadVerticesBuffer);
+                verticesBuffer);
 
-        int colorHandle = GLES20.glGetAttribLocation(quadProgram, "vColor");
+        int colorHandle = GLES20.glGetAttribLocation(program, "vColor");
         GLES20.glEnableVertexAttribArray(colorHandle);
         GLES20.glVertexAttribPointer(
                 colorHandle,
@@ -104,16 +110,16 @@ public class Mosaic {
                 GLES20.GL_FLOAT,
                 false,
                 0,
-                quadColorsBuffer);
+                colorsBuffer);
 
-        int mvpMatrixHandle = GLES20.glGetUniformLocation(quadProgram, "uMVPMatrix");
+        int mvpMatrixHandle = GLES20.glGetUniformLocation(program, "uMVPMatrix");
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
         GLES20.glDrawElements(
                 GLES20.GL_TRIANGLES,
-                quadDrawList.length,
+                drawList.length,
                 GLES20.GL_UNSIGNED_SHORT,
-                quadDrawListBuffer);
+                drawListBuffer);
 
         GLES20.glDisableVertexAttribArray(positionHandle);
         GLES20.glDisableVertexAttribArray(colorHandle);

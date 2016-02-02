@@ -12,7 +12,7 @@ public class GridMosaicBuilder extends MosaicBuilder{
 
     @Override
     public Mosaic buildMosaic(int offsetX, int offsetY) {
-        ArrayList<Quad> quads = new ArrayList<>();
+        ArrayList<Polygon> polygons = new ArrayList<>();
         float[][][] vertices;
 
         float wn = 1f / QUADS_PER_ROW;
@@ -34,16 +34,16 @@ public class GridMosaicBuilder extends MosaicBuilder{
             }
         for (int i=0; i<QUADS_PER_ROW; i++)
             for (int j=0; j<QUADS_PER_ROW; j++){
-                Quad quad = new Quad();
-                quad.setCorner(0, vertices[i    ][j + 1][0] + strokeSize + smallTranslation(), vertices[i    ][j + 1][1] - strokeSize + smallTranslation());
-                quad.setCorner(1, vertices[i    ][j    ][0] + strokeSize + smallTranslation(), vertices[i    ][j    ][1] + strokeSize + smallTranslation());
-                quad.setCorner(2, vertices[i + 1][j + 1][0] - strokeSize + smallTranslation(), vertices[i + 1][j + 1][1] - strokeSize + smallTranslation());
-                quad.setCorner(3, vertices[i + 1][j    ][0] - strokeSize + smallTranslation(), vertices[i + 1][j    ][1] + strokeSize + smallTranslation());
-                quads.add(quad);
+                Polygon polygon = new Polygon();
+                polygon.addVertex(vertices[i][j][0] + strokeSize + smallTranslation(), vertices[i][j][1] + strokeSize + smallTranslation());
+                polygon.addVertex(vertices[i][j + 1][0] + strokeSize + smallTranslation(), vertices[i][j + 1][1] - strokeSize + smallTranslation());
+                polygon.addVertex(vertices[i + 1][j + 1][0] - strokeSize + smallTranslation(), vertices[i + 1][j + 1][1] - strokeSize + smallTranslation());
+                polygon.addVertex(vertices[i + 1][j][0] - strokeSize + smallTranslation(), vertices[i + 1][j][1] + strokeSize + smallTranslation());
+                polygons.add(polygon);
             }
 
         Mosaic mosaic = new Mosaic();
-        mosaic.setQuads(quads);
+        mosaic.setQuads(polygons);
         return mosaic;
     }
 

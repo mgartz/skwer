@@ -15,7 +15,7 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
     @Override
     public Mosaic buildMosaic(int offsetX, int offsetY) {
         Mosaic mosaic = new Mosaic();
-        List<Quad> quads = new ArrayList<>();
+        List<Polygon> polygons = new ArrayList<>();
 
         float x0 = offsetX;
         float y0 = offsetY;
@@ -31,27 +31,27 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
         float radius8 = 0.8f;
 
         float thetaOffset = (float) Math.PI;
-        addCircularPaths(quads, x0, y0, radius7, radius8, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 3.0), true);
-        addCircularPaths(quads, x0, y0, radius5, radius6, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 2.5), false);
-        addCircularPaths(quads, x0, y0, radius3, radius4, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 1.8), false);
-        addCircularPaths(quads, x0, y0, radius1, radius2, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 1.5), false);
+        addCircularPaths(polygons, x0, y0, radius7, radius8, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 3.0), true);
+        addCircularPaths(polygons, x0, y0, radius5, radius6, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 2.5), false);
+        addCircularPaths(polygons, x0, y0, radius3, radius4, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 1.8), false);
+        addCircularPaths(polygons, x0, y0, radius1, radius2, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 1.5), false);
 
-        addCenterQuad(quads, x0, y0, radius0);
+        addCenterQuad(polygons, x0, y0, radius0);
 
-        mosaic.setQuads(quads);
+        mosaic.setQuads(polygons);
         return mosaic;
     }
 
-    private void addCenterQuad(List<Quad> quads, float x0, float y0, float radius0) {
-        Quad quad = new Quad();
-        quad.setCorner(0, (float) (x0 + radius0 * Math.sqrt(3) / 2), (float) (y0 + radius0 * Math.sqrt(3) / 2));
-        quad.setCorner(1, (float) (x0 - radius0 * Math.sqrt(3) / 2), (float) (y0 + radius0 * Math.sqrt(3) / 2));
-        quad.setCorner(2, (float) (x0 + radius0 * Math.sqrt(3) / 2), (float) (y0 - radius0 * Math.sqrt(3) / 2));
-        quad.setCorner(3, (float) (x0 - radius0 * Math.sqrt(3) / 2), (float) (y0 - radius0 * Math.sqrt(3) / 2));
-        quads.add(quad);
+    private void addCenterQuad(List<Polygon> polygons, float x0, float y0, float radius0) {
+        Polygon polygon = new Polygon();
+        polygon.addVertex((float) (x0 + radius0 * Math.sqrt(3) / 2), (float) (y0 + radius0 * Math.sqrt(3) / 2));
+        polygon.addVertex((float) (x0 - radius0 * Math.sqrt(3) / 2), (float) (y0 + radius0 * Math.sqrt(3) / 2));
+        polygon.addVertex((float) (x0 - radius0 * Math.sqrt(3) / 2), (float) (y0 - radius0 * Math.sqrt(3) / 2));
+        polygon.addVertex((float) (x0 + radius0 * Math.sqrt(3) / 2), (float) (y0 - radius0 * Math.sqrt(3) / 2));
+        polygons.add(polygon);
     }
 
-    private void addCircularPaths(List<Quad> quads, float x0, float y0, float r1, float r2, float thetaGap, float thetaOffset, int numMosaics, boolean isLastRow){
+    private void addCircularPaths(List<Polygon> polygons, float x0, float y0, float r1, float r2, float thetaGap, float thetaOffset, int numMosaics, boolean isLastRow){
         double thetaDelta = Math.PI * 2 / numMosaics;
         double theta = thetaOffset;
         double deformedDelta;
@@ -85,30 +85,28 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
             float x4 = x0 + x(adjustedSize, r1, theta21);
             float y4 = y0 + y(adjustedSize, r1, theta21);
 
-            Quad quad = new Quad();
-            quad.setCorner(0, x1 + smallTranslation(), y1 + smallTranslation());
-            quad.setCorner(1, x2 + smallTranslation(), y2 + smallTranslation());
-//            if (isLastRow) {
-//                adjustedSize = randomizeSize(r1, 1, deformation);
-//
-//                double th1 = Math.atan2(Math.sin(theta12), Math.cos(theta12));
-//                double th2 = Math.atan2(Math.sin(theta22), Math.cos(theta22));
-//                if (th1 < 0)
-//                    th1 += Math.PI * 2;
-//                if (th2 < 0)
-//                    th2 += Math.PI * 2;
-//                if (th1 < Math.PI / 4 && th2 > Math.PI / 4)
-//                    path.lineTo(adjustedSize, adjustedSize);
-//                else if (th1 < 3 * Math.PI / 4 && th2 > 3 * Math.PI / 4)
-//                    path.lineTo(0, adjustedSize);
-//                else if (th1 < 5 * Math.PI / 4 && th2 > 5 * Math.PI / 4)
-//                    path.lineTo(0, 0);
-//                else if (th1 < 7 * Math.PI / 4 && th2 > 7 * Math.PI / 4)
-//                    path.lineTo(adjustedSize, 0);
-//            }
-            quad.setCorner(3, x3 + smallTranslation(), y3 + smallTranslation());
-            quad.setCorner(2, x4 + smallTranslation(), y4 + smallTranslation());
-            quads.add(quad);
+            Polygon polygon = new Polygon();
+            polygon.addVertex(x1 + smallTranslation(), y1 + smallTranslation());
+            polygon.addVertex(x2 + smallTranslation(), y2 + smallTranslation());
+            if (isLastRow) {
+                double th1 = Math.atan2(Math.sin(theta12), Math.cos(theta12));
+                double th2 = Math.atan2(Math.sin(theta22), Math.cos(theta22));
+                if (th1 < 0)
+                    th1 += Math.PI * 2;
+                if (th2 < 0)
+                    th2 += Math.PI * 2;
+                if (th1 < Math.PI / 4 && th2 > Math.PI / 4)
+                    polygon.addVertex(x0 - 0.5f + adjustedSize, y0 - 0.5f + adjustedSize);
+                else if (th1 < 3 * Math.PI / 4 && th2 > 3 * Math.PI / 4)
+                    polygon.addVertex(x0 - 0.5f, y0 - 0.5f + adjustedSize);
+                else if (th1 < 5 * Math.PI / 4 && th2 > 5 * Math.PI / 4)
+                    polygon.addVertex(x0 - 0.5f, y0 - 0.5f);
+                else if (th1 < 7 * Math.PI / 4 && th2 > 7 * Math.PI / 4)
+                    polygon.addVertex(x0 - 0.5f + adjustedSize, y0 - 0.5f);
+            }
+            polygon.addVertex(x3 + smallTranslation(), y3 + smallTranslation());
+            polygon.addVertex(x4 + smallTranslation(), y4 + smallTranslation());
+            polygons.add(polygon);
             theta += deformedDelta;
         }
     }
