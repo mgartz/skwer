@@ -1,4 +1,4 @@
-package com.gartz.skwer;
+package com.gartz.skwer.game;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;

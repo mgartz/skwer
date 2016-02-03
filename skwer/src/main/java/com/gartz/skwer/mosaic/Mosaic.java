@@ -1,6 +1,8 @@
-package com.gartz.skwer;
+package com.gartz.skwer.mosaic;
 
 import android.opengl.GLES20;
+
+import com.gartz.skwer.game.GameGLRenderer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -46,9 +48,9 @@ public class Mosaic {
 
         for (Polygon polygon : polygons) {
             polygon.setupDrawIndices();
+            polygon.randomizeColorDeltas(60);
             polygon.update();
         }
-        setColor(0xFFFF0080);
     }
 
     private void setupBuffersAndShaders(float[] vertices, float[] colors, short[] drawList) {
@@ -127,8 +129,13 @@ public class Mosaic {
         GLES20.glDisableVertexAttribArray(colorHandle);
     }
 
-    public void setColor(int color) {
+    public void setColor(int color, float dimFactor) {
         for (Polygon polygon : polygons)
-            polygon.setColor(color, 60);
+            polygon.setColor(color, dimFactor);
+    }
+
+    public void randomizeColorDeltas() {
+        for (Polygon polygon : polygons)
+            polygon.randomizeColorDeltas(60);
     }
 }

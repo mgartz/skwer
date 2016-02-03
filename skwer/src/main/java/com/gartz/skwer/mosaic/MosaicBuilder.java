@@ -1,4 +1,4 @@
-package com.gartz.skwer;
+package com.gartz.skwer.mosaic;
 
 import java.util.Random;
 
@@ -18,7 +18,6 @@ public abstract class MosaicBuilder {
 
 
     protected float smallTranslation(){
-//        return (-0.5f + random.nextFloat()) * 0.02f;
-        return 0;
+        return (-0.5f + random.nextFloat()) * 0.02f;
     }
 }

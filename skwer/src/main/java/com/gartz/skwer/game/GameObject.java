@@ -1,4 +1,4 @@
-package com.gartz.skwer;
+package com.gartz.skwer.game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,8 @@ import java.util.List;
 public class GameObject {
     protected Game game;
     protected List<GameObject> children;
+
+    protected float left, right, top, bottom;
 
     public GameObject(Game game) {
         this.game = game;
@@ -35,20 +37,26 @@ public class GameObject {
 
     // Touch
     public GameObject getTouchedObject(float x, float y) {
-        // TODO add bounds
-        // TODO keep bounds accurate
-        // TODO Determine based on bounds
-        // TODO project bounds??
         if (children != null)
             for (GameObject child : children) {
                 GameObject touchedChild = child.getTouchedObject(x, y);
                 if (touchedChild != null)
                     return touchedChild;
             }
-        return this;
+        if (left < x && right > x && top < y && bottom > y)
+            return this;
+        return null;
     }
     public void touch() { }
+    public void unTouch() { }
     public void click() { }
     public void longClick() { }
+
+    protected void setBounds(float left, float right, float top, float bottom) {
+        this.left = left;
+        this.right = right;
+        this.top = top;
+        this.bottom = bottom;
+    }
 
 }

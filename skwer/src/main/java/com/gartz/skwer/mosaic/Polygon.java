@@ -1,4 +1,4 @@
-package com.gartz.skwer;
+package com.gartz.skwer.mosaic;
 
 import android.graphics.PointF;
 
@@ -26,6 +26,8 @@ public class Polygon {
 
     private int baseColor;
     private float[] color = new float[4];
+    private float dimFactor = 1;
+    private float colorDelta;
     private List<PointF> vertices = new ArrayList<>();
 
     private boolean verticesChanged = true;
@@ -80,17 +82,23 @@ public class Polygon {
             verticesChanged = true;
         }
     }
-    public void setColor(int color, int maxRandomDelta) {
-        if (this.baseColor != color) {
+    public void setColor(int color, float dimFactor) {
+        if (this.baseColor != color || this.dimFactor != dimFactor) {
             baseColor = color;
-            int randomDelta = random.nextInt(2 * maxRandomDelta + 1) - maxRandomDelta;
-
-            this.color[0] = 1f * Math.max(0, Math.min(0xFF, ((baseColor >> 0x10) & 0xFF) + randomDelta)) / 0xFF;
-            this.color[1] = 1f * Math.max(0, Math.min(0xFF, ((baseColor >> 0x8) & 0xFF) + randomDelta)) / 0xFF;
-            this.color[2] = 1f * Math.max(0, Math.min(0xFF, (baseColor & 0xFF) + randomDelta)) / 0xFF;
-            this.color[3] = 1f * ((color >> 0x18) & 0xFF) / 0xFF;
-            colorChanged = true;
+            this.dimFactor = dimFactor;
+            updateColor();
         }
+    }
+    public void randomizeColorDeltas(int maxRandomDelta) {
+        colorDelta = random.nextInt(2 * maxRandomDelta + 1) - maxRandomDelta;
+        updateColor();
+    }
+    protected void updateColor() {
+        this.color[0] = (1-dimFactor) * Math.max(0, Math.min(0xFF, ((baseColor >> 0x10) & 0xFF) + colorDelta)) / 0xFF;
+        this.color[1] = (1-dimFactor) * Math.max(0, Math.min(0xFF, ((baseColor >> 0x8) & 0xFF) + colorDelta)) / 0xFF;
+        this.color[2] = (1-dimFactor) * Math.max(0, Math.min(0xFF, (baseColor & 0xFF) + colorDelta)) / 0xFF;
+        this.color[3] = 1f * ((baseColor >> 0x18) & 0xFF) / 0xFF;
+        colorChanged = true;
     }
 
     @Override

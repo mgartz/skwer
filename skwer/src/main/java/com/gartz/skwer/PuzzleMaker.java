@@ -3,7 +3,7 @@ package com.gartz.skwer;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.gartz.skwer.tile.TileView;
+import com.gartz.skwer.tile.Tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,10 +41,8 @@ public class PuzzleMaker {
         }
     }
 
-    public void makePuzzle(TileView[][] tiles, int numMoves, int baseState){
+    public void makePuzzle(Tile[][] tiles, int numMoves, int baseState){
         Map<String, Integer> counts = new HashMap<>();
-        int sizeX = tiles.length;
-        int sizeY = tiles[0].length;
 
         startedPuzzle(tiles);
         SharedPreferences.Editor editor = preferences.edit();
@@ -55,14 +53,14 @@ public class PuzzleMaker {
         editor.putInt("base_state", baseState);
         editor.putInt("moves", numMoves);
 
-        for (TileView[] tile : tiles)
-            for (TileView aTile : tile) {
-                aTile.setState(baseState, -aTile.puzzleCount);
-                aTile.hintCount = 0;
+        for (Tile[] row : tiles)
+            for (Tile tile : row) {
+                tile.setState(baseState, -tile.puzzleCount);
+                tile.hintCount = 0;
             }
         for (int i=0; i<numMoves; i++){
-            int x = random.nextInt(sizeX);
-            int y = random.nextInt(sizeY);
+            int x = random.nextInt(SkwerGame.NUM_TILES_X);
+            int y = random.nextInt(SkwerGame.NUM_TILES_Y);
             Integer lastCount = counts.get(x + "" + y + "" + tiles[x][y].state);
             lastCount = lastCount == null ? 0 : lastCount;
             if (lastCount < 2 && tiles[x][y].active) {
@@ -81,29 +79,29 @@ public class PuzzleMaker {
                 i--;
         }
         editor.apply();
-        Hints.setForPuzzleStates(lastPuzzleStates);
+//        Hints.setForPuzzleStates(lastPuzzleStates);//TODO
     }
 
-    public void clear(int baseState, TileView[][] tiles){
+    public void clear(int baseState, Tile[][] tiles){
         endedPuzzle(tiles);
         lastPuzzle.clear();
         lastPuzzleStates.clear();
         lastPuzzleBase = baseState;
-        for (TileView[] tile : tiles)
-            for (TileView aTile : tile)
-                aTile.hintCount = 0;
-        Hints.setForPuzzleStates(lastPuzzleStates);
+        for (Tile[] row : tiles)
+            for (Tile tile : row)
+                tile.hintCount = 0;
+//        Hints.setForPuzzleStates(lastPuzzleStates);//TODO
     }
 
-    public void resetLastPuzzle(TileView[][] tiles, boolean addRepeat) {
+    public void resetLastPuzzle(Tile[][] tiles, boolean addRepeat) {
         startedPuzzle(tiles);
         if (addRepeat)
             numRepeats++;
 
-        for (TileView[] tile : tiles)
-            for (TileView aTile : tile) {
-                aTile.setState(lastPuzzleBase,-aTile.puzzleCount);
-                aTile.hintCount = 0;
+        for (Tile[] row : tiles)
+            for (Tile tile : row) {
+                tile.setState(lastPuzzleBase,-tile.puzzleCount);
+                tile.hintCount = 0;
             }
         for (int i=0; i<lastPuzzle.size()/2; i++){
             int x = lastPuzzle.get(i*2);
@@ -115,28 +113,28 @@ public class PuzzleMaker {
             if (numRepeats >= 2)
                 tiles[x][y].addHintCount();
         }
-        Hints.setForPuzzleStates(lastPuzzleStates);
+//        Hints.setForPuzzleStates(lastPuzzleStates);//TODO
     }
 
-    public void nextPuzzle(TileView[][] tileViews) {
-        makePuzzle(tileViews, lastPuzzleStates.size(), lastPuzzleBase);
+    public void nextPuzzle(Tile[][] tiles) {
+        makePuzzle(tiles, lastPuzzleStates.size(), lastPuzzleBase);
     }
 
-    public void startedPuzzle(TileView[][] tiles){
+    public void startedPuzzle(Tile[][] tiles){
         inPuzzle = true;
         for (int i=0; i<tiles.length; i++)
             for (int j=0; j<tiles[0].length; j++)
-                if (i == 0 || i == tiles.length-1 || j == 0 || j == tiles[0].length - 1)
+                if (i == 0 || i == tiles.length-1 || j < 2 || j > tiles[0].length - 3)
                     tiles[i][j].active = false;
         preferences.edit().putBoolean("was_in_puzzle", true).apply();
     }
-    public void endedPuzzle(TileView[][] tiles){
+    public void endedPuzzle(Tile[][] tiles){
         inPuzzle = false;
-        for (int i=0; i<tiles.length; i++)
-            for (int j=0; j<tiles[0].length; j++) {
-                tiles[i][j].active = true;
-                tiles[i][j].hintCount = 0;
-                tiles[i][j].setState(tiles[i][j].state, -1);
+        for (Tile[] row : tiles)
+            for (Tile tile : row) {
+                tile.active = true;
+                tile.hintCount = 0;
+                tile.setState(tile.state, -1);
             }
         preferences.edit().putBoolean("was_in_puzzle", false).apply();
     }

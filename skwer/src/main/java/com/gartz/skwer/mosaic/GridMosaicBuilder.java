@@ -1,4 +1,4 @@
-package com.gartz.skwer;
+package com.gartz.skwer.mosaic;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.gartz.skwer;
+package com.gartz.skwer.mosaic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
  * A mosaic builder for error tiles.
  *
  */
-public class ErrorMosaicBuilder extends MosaicBuilder{
+public class ErrorMosaicBuilder extends MosaicBuilder {
     private float minX, maxX, minY, maxY;
 
     @Override

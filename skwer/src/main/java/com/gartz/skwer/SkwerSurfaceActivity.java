@@ -2,11 +2,12 @@ package com.gartz.skwer;
 
 import android.app.Activity;
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 import android.os.Bundle;
 import android.view.View;
 
-import com.gartz.skwer.tile.TileView;
+import com.gartz.skwer.game.Game;
+import com.gartz.skwer.game.GameGLRenderer;
+import com.gartz.skwer.game.GameGLSurfaceView;
 
 /**
  * Created by gartz on 2/1/16.
@@ -14,7 +15,7 @@ import com.gartz.skwer.tile.TileView;
  * Main surface activity
  *
  */
-public class SkwerSurfaceActivity extends Activity implements TileView.BaseStateListener {
+public class SkwerSurfaceActivity extends Activity {
     GameGLSurfaceView surfaceView;
     Game game;
 
@@ -37,11 +38,15 @@ public class SkwerSurfaceActivity extends Activity implements TileView.BaseState
             @Override
             public void onSurfaceChanged(float[] projectionMatrix, int width, int height) {
                 GLES20.glViewport(0, 0, width, height);
-                float ratio = (float) height / width;
-                float s = SkwerGame.NUM_TILES_X * (1 + SkwerGame.GAP) / 2f;
-                Matrix.frustumM(projectionMatrix, 0, -s, s, -ratio * s, ratio * s, 1, 2);
+                game.setFrustumMatrix(projectionMatrix, width, height);
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        game.saveState(this);
     }
 
     @Override
@@ -57,11 +62,6 @@ public class SkwerSurfaceActivity extends Activity implements TileView.BaseState
                             | View.SYSTEM_UI_FLAG_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
-    }
-
-    @Override
-    public void baseStateDidChange(int baseState) {
-        // TODO background
     }
 
 }
