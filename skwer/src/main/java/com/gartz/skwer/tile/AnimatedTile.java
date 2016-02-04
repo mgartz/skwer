@@ -3,6 +3,10 @@ package com.gartz.skwer.tile;
 import com.gartz.skwer.game.Game;
 import com.gartz.skwer.SkwerGame;
 import com.gartz.skwer.helper.ColorHelper;
+import com.gartz.skwer.mosaic.Mosaic;
+import com.gartz.skwer.mosaic.Polygon;
+
+import java.util.ArrayList;
 
 /**
  * Created by gartz on 2/2/16.
@@ -21,8 +25,28 @@ public class AnimatedTile extends Tile {
     private float origDimFactor;
     private float targetDimFactor;
 
+    private Mosaic background;
+
     public AnimatedTile(Game game, int x, int y, float x0, float y0) {
         super(game, x, y, x0, y0);
+
+        setupBackground(x0, y0);
+    }
+
+    private void setupBackground(float x0, float y0) {
+        background = new Mosaic();
+
+        Polygon backgroundPoly = new Polygon();
+        float size = 0.5f * (1 + SkwerGame.GAP);
+        backgroundPoly.addVertex(x0 - size, y0 - size);
+        backgroundPoly.addVertex(x0 - size, y0 + size);
+        backgroundPoly.addVertex(x0 + size, y0 + size);
+        backgroundPoly.addVertex(x0 + size, y0 - size);
+        ArrayList<Polygon> polygons = new ArrayList<>();
+        polygons.add(backgroundPoly);
+        background.setQuads(polygons);
+        background.setColor(0xFFFFFFFF, 0);
+        background.randomizeColorDeltas(0);
     }
 
     @Override
@@ -64,13 +88,11 @@ public class AnimatedTile extends Tile {
             currentDimFactor = origDimFactor * (1-t) + targetDimFactor * t;
             game.requestRender();
         }
-        //TODO
-//        if (hintCount > 0){
-//            setBackgroundColor(Hints.getHintBackgroundColor());
-//            game.requestRender();
-//        }
-//        else
-//            setBackgroundColor(0x00000000);
+        if (hintCount > 0) {
+            background.setColor(skwerGame.getHintColor(), 0);
+            background.draw(mvpMatrix);
+            game.requestRender();
+        }
 
         if (!isAnimating && hintCount == 0 && !isSelected && puzzleCount >= 0) {
             currentColor = targetColor;

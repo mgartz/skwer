@@ -43,7 +43,6 @@ public abstract class Tile extends GameObject {
         if (active) {
             doAction(-1);
             hintCount--;
-//            Hints.pressedTile(state); // TODO
             skwerGame.pressedTile();
         }
     }

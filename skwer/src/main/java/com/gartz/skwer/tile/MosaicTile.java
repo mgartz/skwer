@@ -31,7 +31,7 @@ public class MosaicTile extends AnimatedTile {
         super.onDraw(mvpMatrix);
         Mosaic mosaic = getCurrentMosaic();
         if (isAnimating)
-            mosaic.randomizeColorDeltas();
+            mosaic.randomizeColorDeltas(60);
         mosaic.setColor(currentColor, currentDimFactor);
         mosaic.draw(mvpMatrix);
     }

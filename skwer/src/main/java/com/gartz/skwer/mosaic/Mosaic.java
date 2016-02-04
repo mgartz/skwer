@@ -134,8 +134,8 @@ public class Mosaic {
             polygon.setColor(color, dimFactor);
     }
 
-    public void randomizeColorDeltas() {
+    public void randomizeColorDeltas(int maxRandomDelta) {
         for (Polygon polygon : polygons)
-            polygon.randomizeColorDeltas(60);
+            polygon.randomizeColorDeltas(maxRandomDelta);
     }
 }

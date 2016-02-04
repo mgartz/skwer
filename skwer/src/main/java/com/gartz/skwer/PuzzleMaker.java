@@ -79,7 +79,6 @@ public class PuzzleMaker {
                 i--;
         }
         editor.apply();
-//        Hints.setForPuzzleStates(lastPuzzleStates);//TODO
     }
 
     public void clear(int baseState, Tile[][] tiles){
@@ -90,7 +89,6 @@ public class PuzzleMaker {
         for (Tile[] row : tiles)
             for (Tile tile : row)
                 tile.hintCount = 0;
-//        Hints.setForPuzzleStates(lastPuzzleStates);//TODO
     }
 
     public void resetLastPuzzle(Tile[][] tiles, boolean addRepeat) {
@@ -113,7 +111,6 @@ public class PuzzleMaker {
             if (numRepeats >= 2)
                 tiles[x][y].addHintCount();
         }
-//        Hints.setForPuzzleStates(lastPuzzleStates);//TODO
     }
 
     public void nextPuzzle(Tile[][] tiles) {

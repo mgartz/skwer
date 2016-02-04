@@ -22,14 +22,16 @@ public class SkwerGame extends Game {
     public final Tile[][] tiles = new Tile[NUM_TILES_X][NUM_TILES_Y];
 
     private PuzzleMaker puzzleMaker;
+    private Hints hints;
+
     private SharedPreferences preferences;
 
     private int baseState;
 
     @Override
     protected void loadScene(GameObject root) {
+        hints = new Hints();
         makeGameTiles(root);
-        // TODO load the hints!
     }
 
     @Override
@@ -111,6 +113,7 @@ public class SkwerGame extends Game {
     }
     public void resetLastPuzzle(boolean addRepeat) {
         puzzleMaker.resetLastPuzzle(tiles, addRepeat);
+        hints.setForPuzzleStates();
     }
     public void cancelNextPuzzle() {
         handler.removeCallbacks(nextPuzzleRunnable);
@@ -122,4 +125,8 @@ public class SkwerGame extends Game {
                 puzzleMaker.nextPuzzle(tiles);
         }
     };
+
+    public int getHintColor() {
+        return hints.getHintBackgroundColor();
+    }
 }
