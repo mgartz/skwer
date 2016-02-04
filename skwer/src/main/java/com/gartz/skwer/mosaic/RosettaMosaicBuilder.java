@@ -40,7 +40,7 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
     }
 
     private void addCenterQuad(List<Polygon> polygons, float x0, float y0, float radius0) {
-        Polygon polygon = new Polygon();
+        Polygon polygon = new FlippingPolygon();
         polygon.addVertex((float) (x0 + radius0 * Math.sqrt(3) / 2), (float) (y0 + radius0 * Math.sqrt(3) / 2));
         polygon.addVertex((float) (x0 - radius0 * Math.sqrt(3) / 2), (float) (y0 + radius0 * Math.sqrt(3) / 2));
         polygon.addVertex((float) (x0 - radius0 * Math.sqrt(3) / 2), (float) (y0 - radius0 * Math.sqrt(3) / 2));
@@ -82,7 +82,7 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
             float x4 = x0 + x(adjustedSize, r1, theta21);
             float y4 = y0 + y(adjustedSize, r1, theta21);
 
-            Polygon polygon = new Polygon();
+            Polygon polygon = new FlippingPolygon();
             polygon.addVertex(x1 + smallTranslation(), y1 + smallTranslation());
             polygon.addVertex(x2 + smallTranslation(), y2 + smallTranslation());
             if (isLastRow) {

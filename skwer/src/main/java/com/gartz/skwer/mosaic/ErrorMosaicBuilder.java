@@ -22,7 +22,7 @@ public class ErrorMosaicBuilder extends MosaicBuilder {
         maxY = offsetY + 0.5f;
 
         float mosaicSize = 0.5f  / QUADS_PER_ROW;
-        Polygon polygon = new Polygon();
+        Polygon polygon = new FlippingPolygon();
         polygon.addVertex(offsetX - mosaicSize, offsetY);
         polygon.addVertex(offsetX, offsetY - mosaicSize);
         polygon.addVertex(offsetX + mosaicSize, offsetY);
@@ -125,7 +125,7 @@ public class ErrorMosaicBuilder extends MosaicBuilder {
                 y2 = Math.max(minY, Math.min(maxY, y2));
                 y3 = Math.max(minY, Math.min(maxY, y3));
                 y4 = Math.max(minY, Math.min(maxY, y4));
-                Polygon polygon = new Polygon();
+                Polygon polygon = new FlippingPolygon();
 
                 polygon.addVertex(x1 + smallTranslation(), y1 + smallTranslation());
                 polygon.addVertex(x2 + smallTranslation(), y2 + smallTranslation());
@@ -189,7 +189,7 @@ public class ErrorMosaicBuilder extends MosaicBuilder {
 
     private void addTrianglePath(List<Polygon> polygons, float x1, float y1, float x2, float y2, float x3, float y3){
         if (x1 < maxX && x1 > minX && y1 > minY && y1 < maxY) {
-            Polygon polygon = new Polygon();
+            Polygon polygon = new FlippingPolygon();
             polygon.addVertex(x1 + smallTranslation(), y1 + smallTranslation());
 
             float interp = 0.1f;

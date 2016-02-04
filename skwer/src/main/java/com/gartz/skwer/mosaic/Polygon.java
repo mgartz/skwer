@@ -24,14 +24,15 @@ public class Polygon {
 
     private boolean closed;
 
-    private int baseColor;
+    protected int baseColor;
     private float[] color = new float[4];
-    private float dimFactor = 1;
+    protected float dimFactor = 1;
     private float colorDelta;
-    private List<PointF> vertices = new ArrayList<>();
+    protected List<PointF> vertices = new ArrayList<>();
 
-    private boolean verticesChanged = true;
+    protected boolean verticesChanged = true;
     private boolean colorChanged = true;
+    public PointF center = new PointF();
 
     public void addVertex(float x, float y) {
         if (!closed)
@@ -40,9 +41,19 @@ public class Polygon {
 
     public void close(Mosaic mosaic, short vertexOffset, short drawListOffset) {
         closed = true;
+        calcCenter();
         this.mosaic = mosaic;
         this.vertexOffset = vertexOffset;
         this.drawListOffset = drawListOffset;
+    }
+
+    private void calcCenter() {
+        for (PointF vertex : vertices) {
+            center.x += vertex.x;
+            center.y += vertex.y;
+        }
+        center.x /= vertices.size();
+        center.y /= vertices.size();
     }
 
     public short getNumVertices() {
@@ -61,9 +72,11 @@ public class Polygon {
     public void update() {
         if (verticesChanged) {
             mosaic.verticesBuffer.position(vertexOffset * COORDS_PER_VERTEX);
+            PointF vertex;
             for (int i=0; i<vertices.size(); i++) {
-                mosaic.verticesBuffer.put(vertices.get(i).x);
-                mosaic.verticesBuffer.put(vertices.get(i).y);
+                vertex = getVertex(i);
+                mosaic.verticesBuffer.put(vertex.x);
+                mosaic.verticesBuffer.put(vertex.y);
                 mosaic.verticesBuffer.put(0);
             }
             verticesChanged = false;
@@ -75,12 +88,8 @@ public class Polygon {
             colorChanged = false;
         }
     }
-    public void setVertex(int index, float x, float y) {
-        if (vertices.get(index).x != x || vertices.get(index).y != y) {
-            vertices.get(index).x = x;
-            vertices.get(index).y = y;
-            verticesChanged = true;
-        }
+    protected PointF getVertex(int index) {
+        return vertices.get(index);
     }
     public void setColor(int color, float dimFactor) {
         if (this.baseColor != color || this.dimFactor != dimFactor) {

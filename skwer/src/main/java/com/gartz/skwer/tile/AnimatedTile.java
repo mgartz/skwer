@@ -65,7 +65,7 @@ public class AnimatedTile extends Tile {
             origDimFactor = currentDimFactor;
             isAnimating = true;
             animationStartTime = System.currentTimeMillis();
-            animationPeriod = 300;
+            animationPeriod = 400;
         }
         game.requestRender();
     }

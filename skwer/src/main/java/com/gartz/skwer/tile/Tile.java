@@ -86,7 +86,7 @@ public abstract class Tile extends GameObject {
                 skwerGame.tiles[x+n][y+n].nextColor(puzzleCountDelta);
         }
     }
-    public void setState(int state, int puzzleCountDelta){
+    public void setState(int state, int puzzleCountDelta, boolean isUserAction){
         this.puzzleCount += puzzleCountDelta;
         if (puzzleCount == -3)
             puzzleCount = 0;
@@ -99,7 +99,7 @@ public abstract class Tile extends GameObject {
     }
 
     protected void nextColor(int puzzleCountDelta){
-        setState(state + 1, puzzleCountDelta);
+        setState(state + 1, puzzleCountDelta, true);
     }
 
     protected abstract void updateToCurrentState(boolean animated);

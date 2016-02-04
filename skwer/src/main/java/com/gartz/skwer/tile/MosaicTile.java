@@ -30,10 +30,17 @@ public class MosaicTile extends AnimatedTile {
     public void onDraw(float[] mvpMatrix) {
         super.onDraw(mvpMatrix);
         Mosaic mosaic = getCurrentMosaic();
-        if (isAnimating)
-            mosaic.randomizeColorDeltas(60);
         mosaic.setColor(currentColor, currentDimFactor);
         mosaic.draw(mvpMatrix);
+    }
+
+    @Override
+    public void setState(int state, int puzzleCountDelta, boolean isUserAction) {
+        int oldState = this.state;
+        super.setState(state, puzzleCountDelta, isUserAction);
+
+        if (oldState != state && puzzleCountDelta < 0 && isUserAction)
+            getCurrentMosaic().flip((left + right) / 2, (top + bottom) / 2);
     }
 
     protected Mosaic getCurrentMosaic() {

@@ -54,7 +54,7 @@ public class SkwerGame extends Game {
     private void loadTilesStates() {
         for (int i=0; i<NUM_TILES_X; i++)
             for (int j=0; j<NUM_TILES_Y; j++)
-                tiles[i][j].setState(preferences.getInt("tile" + i + "_" + j, 0), 0);
+                tiles[i][j].setState(preferences.getInt("tile" + i + "_" + j, 0), 0, false);
     }
     private void saveTilesStates() {
         SharedPreferences.Editor editor = preferences.edit();
@@ -76,7 +76,7 @@ public class SkwerGame extends Game {
         baseState = state;
         for (Tile[] row : tiles)
             for (Tile tile : row)
-                tile.setState(state, -tile.puzzleCount - 1);
+                tile.setState(state, -tile.puzzleCount - 1, false);
         preferences.edit().putInt("base", state).apply();
         puzzleMaker.clear(state, tiles);
     }
@@ -105,7 +105,7 @@ public class SkwerGame extends Game {
         if (didSolvePuzzle())
             for (Tile[] row : tiles)
                 for (Tile tile : row)
-                    tile.setState(tile.state, -10);
+                    tile.setState(tile.state, -10, false);
     }
 
     public void makePuzzle(int numMoves) {

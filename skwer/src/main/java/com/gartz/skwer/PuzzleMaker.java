@@ -55,7 +55,7 @@ public class PuzzleMaker {
 
         for (Tile[] row : tiles)
             for (Tile tile : row) {
-                tile.setState(baseState, -tile.puzzleCount);
+                tile.setState(baseState, -tile.puzzleCount, false);
                 tile.hintCount = 0;
             }
         for (int i=0; i<numMoves; i++){
@@ -98,7 +98,7 @@ public class PuzzleMaker {
 
         for (Tile[] row : tiles)
             for (Tile tile : row) {
-                tile.setState(lastPuzzleBase,-tile.puzzleCount);
+                tile.setState(lastPuzzleBase,-tile.puzzleCount, false);
                 tile.hintCount = 0;
             }
         for (int i=0; i<lastPuzzle.size()/2; i++){
@@ -131,7 +131,7 @@ public class PuzzleMaker {
             for (Tile tile : row) {
                 tile.active = true;
                 tile.hintCount = 0;
-                tile.setState(tile.state, -1);
+                tile.setState(tile.state, -1, false);
             }
         preferences.edit().putBoolean("was_in_puzzle", false).apply();
     }

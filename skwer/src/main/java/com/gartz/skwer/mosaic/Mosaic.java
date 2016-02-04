@@ -134,6 +134,14 @@ public class Mosaic {
             polygon.setColor(color, dimFactor);
     }
 
+    public void flip(float x0, float y0) {
+        for (Polygon polygon : polygons)
+            if (polygon instanceof FlippingPolygon) {
+                float dist = Math.abs(polygon.center.x - x0) + Math.abs(polygon.center.y - y0);
+                ((FlippingPolygon) polygon).flip((int) (dist * 200));
+            }
+    }
+
     public void randomizeColorDeltas(int maxRandomDelta) {
         for (Polygon polygon : polygons)
             polygon.randomizeColorDeltas(maxRandomDelta);
