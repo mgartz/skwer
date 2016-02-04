@@ -15,7 +15,7 @@ import java.util.ArrayList;
  *
  */
 public class AnimatedTile extends Tile {
-    protected int currentColor = 0xFFFFFFFF;
+    protected int currentColor = 0xFF000000;
     private int targetColor;
     private int origColor;
     protected boolean isAnimating;
