@@ -76,11 +76,11 @@ public class SkwerGame extends Game {
 
     public void setBaseState(int state) {
         baseState = state;
+        puzzleMaker.clear(state, tiles);
         for (Tile[] row : tiles)
             for (Tile tile : row)
                 tile.setState(state, -tile.puzzleCount - 1, false);
         preferences.edit().putInt("base", state).apply();
-        puzzleMaker.clear(state, tiles);
     }
 
     public void pressedTile() {

@@ -15,12 +15,13 @@ import java.util.ArrayList;
  *
  */
 public class AnimatedTile extends Tile {
+    public static final int ANIMATION_PERIOD = 400;
+
     protected int currentColor = 0xFF000000;
     private int targetColor;
     private int origColor;
     protected boolean isAnimating;
     private long animationStartTime;
-    private long animationPeriod;
     protected float currentDimFactor;
     private float origDimFactor;
     private float targetDimFactor;
@@ -69,7 +70,6 @@ public class AnimatedTile extends Tile {
             origDimFactor = currentDimFactor;
             isAnimating = true;
             animationStartTime = System.currentTimeMillis();
-            animationPeriod = 400;
         }
         game.requestRender();
     }
@@ -83,7 +83,7 @@ public class AnimatedTile extends Tile {
     @Override
     public void onDraw(float[] mvpMatrix) {
         if (isAnimating){
-            float t = 1f*(System.currentTimeMillis() - animationStartTime)/animationPeriod;
+            float t = 1f * (System.currentTimeMillis() - animationStartTime) / ANIMATION_PERIOD;
             if (t >= 1) {
                 isAnimating = false;
                 t = 1;

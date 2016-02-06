@@ -27,11 +27,11 @@ public class Polygon {
     protected int baseColor;
     private float[] color = new float[4];
     protected float dimFactor = 1;
-    private float colorDelta;
+    protected float colorDelta;
     protected List<PointF> vertices = new ArrayList<>();
 
     protected boolean verticesChanged = true;
-    private boolean colorChanged = true;
+    protected boolean colorChanged = true;
     public PointF center = new PointF();
 
     public void addVertex(float x, float y) {
@@ -47,7 +47,7 @@ public class Polygon {
         this.drawListOffset = drawListOffset;
     }
 
-    private void calcCenter() {
+    protected void calcCenter() {
         for (PointF vertex : vertices) {
             center.x += vertex.x;
             center.y += vertex.y;

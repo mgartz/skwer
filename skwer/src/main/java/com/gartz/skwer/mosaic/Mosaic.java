@@ -21,7 +21,7 @@ public class Mosaic {
     private static final int COORDS_PER_VERTEX = 3;
     private static final int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
 
-    List<Polygon> polygons;
+    protected List<Polygon> polygons;
 
     public FloatBuffer verticesBuffer;
     public FloatBuffer colorsBuffer;

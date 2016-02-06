@@ -1,6 +1,7 @@
 package com.gartz.skwer.tile;
 
 import com.gartz.skwer.game.Game;
+import com.gartz.skwer.mosaic.TransitionMosaic;
 import com.gartz.skwer.mosaic.builder.ErrorMosaicBuilder;
 import com.gartz.skwer.mosaic.builder.GridMosaicBuilder;
 import com.gartz.skwer.mosaic.Mosaic;
@@ -17,6 +18,8 @@ public class MosaicTile extends AnimatedTile {
     Mosaic gridMosaic;
     Mosaic rosettaMosaic;
     Mosaic errorMosaic;
+    Mosaic lastMosaic;
+    TransitionMosaic transitionMosaic;
 
     public MosaicTile(Game game, int i, int j, float x, float y) {
         super(game, i, j, x, y);
@@ -32,6 +35,9 @@ public class MosaicTile extends AnimatedTile {
         Mosaic mosaic = getCurrentMosaic();
         mosaic.setColor(currentColor, currentDimFactor);
         mosaic.draw(mvpMatrix);
+
+        if (mosaic == transitionMosaic)
+            game.requestRender();
     }
 
     @Override
@@ -40,10 +46,33 @@ public class MosaicTile extends AnimatedTile {
         super.setState(state, puzzleCountDelta, isUserAction);
 
         if (oldState != state && puzzleCountDelta < 0 && isUserAction)
-            getCurrentMosaic().flip((left + right) / 2, (top + bottom) / 2);
+            lastMosaic.flip((left + right) / 2, (top + bottom) / 2);
     }
 
     protected Mosaic getCurrentMosaic() {
+        Mosaic nextMosaic = getMosaicForCurrentState();
+
+        if (transitionMosaic != null) {
+            if (transitionMosaic.isTransitionDone()) {
+                lastMosaic = transitionMosaic.getTarget();
+                transitionMosaic = null;
+            }
+            else
+                return transitionMosaic;
+        }
+
+        if (nextMosaic != lastMosaic && lastMosaic != null) {
+            transitionMosaic = new TransitionMosaic();
+            transitionMosaic.prepareMatches(lastMosaic, nextMosaic);
+            transitionMosaic.startTransition();
+            return transitionMosaic;
+        }
+
+        lastMosaic = nextMosaic;
+
+        return nextMosaic;
+    }
+    protected Mosaic getMosaicForCurrentState() {
         if (skwerGame.isInPuzzle() && puzzleCount > -3) {
             if (puzzleCount >= 3)
                 return rosettaMosaic;
