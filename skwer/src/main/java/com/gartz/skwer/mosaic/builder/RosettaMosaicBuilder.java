@@ -21,7 +21,7 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
         Mosaic mosaic = new Mosaic();
         List<Polygon> polygons = new ArrayList<>();
 
-        float radius0 = 0.05f;
+        float radius0 = 0.06f;
         float radius1 = 0.08f;
         float radius2 = 0.18f;
         float radius3 = 0.20f;
@@ -37,18 +37,22 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
         addCircularPaths(polygons, offsetX, offsetY, radius3, radius4, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 1.8), false);
         addCircularPaths(polygons, offsetX, offsetY, radius1, radius2, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 1.5), false);
 
-        addCenterSquare(polygons, offsetX, offsetY, radius0);
+        addCenterPolygon(polygons, offsetX, offsetY, radius0, 6);
 
         mosaic.setPolygons(polygons);
         return mosaic;
     }
 
-    private void addCenterSquare(List<Polygon> polygons, float x0, float y0, float radius0) {
+    private void addCenterPolygon(List<Polygon> polygons, float x0, float y0, float radius0, int numSides) {
         Polygon polygon = new FlippingPolygon();
-        polygon.addVertex((float) (x0 + radius0 * Math.sqrt(3) / 2), (float) (y0 + radius0 * Math.sqrt(3) / 2));
-        polygon.addVertex((float) (x0 - radius0 * Math.sqrt(3) / 2), (float) (y0 + radius0 * Math.sqrt(3) / 2));
-        polygon.addVertex((float) (x0 - radius0 * Math.sqrt(3) / 2), (float) (y0 - radius0 * Math.sqrt(3) / 2));
-        polygon.addVertex((float) (x0 + radius0 * Math.sqrt(3) / 2), (float) (y0 - radius0 * Math.sqrt(3) / 2));
+        double r = radius0 * Math.sqrt(3) / 2;
+        double theta = random.nextFloat() * 6;
+        double thetaStep = 2 * Math.PI / numSides;
+        for (int i=0; i<numSides; i++) {
+            polygon.addVertex((float) (x0 + r * Math.cos(theta) + smallTranslation() * 0.5f),
+                    (float) (y0 + r * Math.sin(theta) + smallTranslation() * 0.5f));
+            theta += thetaStep;
+        }
         polygons.add(polygon);
     }
 
