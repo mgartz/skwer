@@ -131,4 +131,7 @@ public class SkwerGame extends Game {
     public int getHintColor() {
         return hints.getHintBackgroundColor();
     }
+    public long getHintTime() {
+        return hints.getHintTime();
+    }
 }

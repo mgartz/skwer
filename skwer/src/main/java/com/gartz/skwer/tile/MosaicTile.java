@@ -1,5 +1,6 @@
 package com.gartz.skwer.tile;
 
+import com.gartz.skwer.Hints;
 import com.gartz.skwer.game.Game;
 import com.gartz.skwer.mosaic.TransitionMosaic;
 import com.gartz.skwer.mosaic.builder.ErrorMosaicBuilder;
@@ -20,6 +21,8 @@ public class MosaicTile extends AnimatedTile {
     Mosaic errorMosaic;
     Mosaic lastMosaic;
     TransitionMosaic transitionMosaic;
+    long previousHintTime;
+    long hintFlipTime = Hints.HINT_BACKGROUND_PHASE_1_PERIOD + Hints.HINT_BACKGROUND_PHASE_2_PERIOD/2 - ANIMATION_PERIOD;
 
     public MosaicTile(Game game, int i, int j, float x, float y) {
         super(game, i, j, x, y);
@@ -35,6 +38,13 @@ public class MosaicTile extends AnimatedTile {
         Mosaic mosaic = getCurrentMosaic();
         mosaic.setColor(currentColor, currentDimFactor);
         mosaic.draw(mvpMatrix);
+
+        if (hintCount > 0) {
+            long hintTime = skwerGame.getHintTime();
+            if (previousHintTime < hintFlipTime && hintTime >= hintFlipTime)
+                lastMosaic.flip((left + right) / 2, (top + bottom) / 2);
+            previousHintTime = hintTime;
+        }
 
         if (mosaic == transitionMosaic)
             game.requestRender();

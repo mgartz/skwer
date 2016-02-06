@@ -9,18 +9,21 @@ import com.gartz.skwer.helper.ColorHelper;
  *
  */
 public class Hints {
-    private static final int HINT_BACKGROUND_PHASE_1_PERIOD = 2000;
-    private static final int HINT_BACKGROUND_PHASE_2_PERIOD = 2000;
+    public static final int HINT_BACKGROUND_PHASE_1_PERIOD = 2000;
+    public static final int HINT_BACKGROUND_PHASE_2_PERIOD = 2000;
     private static final int HINT_BACKGROUND_NUM_BEATS = 1;
     private static final int HINT_COLOR = 0xFFFFFFFF;
     private static final float HINT_BACKGROND_COLOR_AMP = 1f;
 
-    private static long hintAnimationTimeStart;
+    private long hintAnimationTimeStart;
 
     public void setForPuzzleStates(){
         hintAnimationTimeStart = System.currentTimeMillis() - HINT_BACKGROUND_PHASE_1_PERIOD + 200;
     }
 
+    public long getHintTime() {
+        return System.currentTimeMillis() - hintAnimationTimeStart;
+    }
     public int getHintBackgroundColor() {
         long t = System.currentTimeMillis() - hintAnimationTimeStart;
         if (t < HINT_BACKGROUND_PHASE_1_PERIOD)
