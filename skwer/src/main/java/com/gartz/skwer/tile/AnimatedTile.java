@@ -45,7 +45,7 @@ public class AnimatedTile extends Tile {
         ArrayList<Polygon> polygons = new ArrayList<>();
         polygons.add(backgroundPoly);
 
-        background.setQuads(polygons);
+        background.setPolygons(polygons);
         background.setColor(0xFFFFFFFF, 0);
         background.randomizeColorDeltas(0);
     }

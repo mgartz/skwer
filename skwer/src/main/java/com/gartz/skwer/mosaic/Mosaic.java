@@ -29,7 +29,7 @@ public class Mosaic {
 
     private int program;
 
-    public void setQuads(List<Polygon> polygons) {
+    public void setPolygons(List<Polygon> polygons) {
         this.polygons = polygons;
 
         short totalVertices = 0;

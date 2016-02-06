@@ -1,10 +1,10 @@
 package com.gartz.skwer.tile;
 
 import com.gartz.skwer.game.Game;
-import com.gartz.skwer.mosaic.ErrorMosaicBuilder;
-import com.gartz.skwer.mosaic.GridMosaicBuilder;
+import com.gartz.skwer.mosaic.builder.ErrorMosaicBuilder;
+import com.gartz.skwer.mosaic.builder.GridMosaicBuilder;
 import com.gartz.skwer.mosaic.Mosaic;
-import com.gartz.skwer.mosaic.RosettaMosaicBuilder;
+import com.gartz.skwer.mosaic.builder.RosettaMosaicBuilder;
 
 /**
  * Created by gartz on 2/1/16.

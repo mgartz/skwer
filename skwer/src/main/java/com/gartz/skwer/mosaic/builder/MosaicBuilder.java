@@ -1,4 +1,6 @@
-package com.gartz.skwer.mosaic;
+package com.gartz.skwer.mosaic.builder;
+
+import com.gartz.skwer.mosaic.Mosaic;
 
 import java.util.Random;
 

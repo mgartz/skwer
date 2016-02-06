@@ -1,4 +1,8 @@
-package com.gartz.skwer.mosaic;
+package com.gartz.skwer.mosaic.builder;
+
+import com.gartz.skwer.mosaic.FlippingPolygon;
+import com.gartz.skwer.mosaic.Mosaic;
+import com.gartz.skwer.mosaic.Polygon;
 
 import java.util.ArrayList;
 
@@ -43,7 +47,7 @@ public class GridMosaicBuilder extends MosaicBuilder{
             }
 
         Mosaic mosaic = new Mosaic();
-        mosaic.setQuads(polygons);
+        mosaic.setPolygons(polygons);
         return mosaic;
     }
 

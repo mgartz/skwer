@@ -1,4 +1,8 @@
-package com.gartz.skwer.mosaic;
+package com.gartz.skwer.mosaic.builder;
+
+import com.gartz.skwer.mosaic.FlippingPolygon;
+import com.gartz.skwer.mosaic.Mosaic;
+import com.gartz.skwer.mosaic.Polygon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +44,7 @@ public class ErrorMosaicBuilder extends MosaicBuilder {
         addPlusPaths(polygons, mosaicSize, offsetX, offsetY,  1, false);
 
         Mosaic mosaic = new Mosaic();
-        mosaic.setQuads(polygons);
+        mosaic.setPolygons(polygons);
         return mosaic;
     }
 

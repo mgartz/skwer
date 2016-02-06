@@ -1,4 +1,8 @@
-package com.gartz.skwer.mosaic;
+package com.gartz.skwer.mosaic.builder;
+
+import com.gartz.skwer.mosaic.FlippingPolygon;
+import com.gartz.skwer.mosaic.Mosaic;
+import com.gartz.skwer.mosaic.Polygon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +37,13 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
         addCircularPaths(polygons, offsetX, offsetY, radius3, radius4, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 1.8), false);
         addCircularPaths(polygons, offsetX, offsetY, radius1, radius2, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 1.5), false);
 
-        addCenterQuad(polygons, offsetX, offsetY, radius0);
+        addCenterSquare(polygons, offsetX, offsetY, radius0);
 
-        mosaic.setQuads(polygons);
+        mosaic.setPolygons(polygons);
         return mosaic;
     }
 
-    private void addCenterQuad(List<Polygon> polygons, float x0, float y0, float radius0) {
+    private void addCenterSquare(List<Polygon> polygons, float x0, float y0, float radius0) {
         Polygon polygon = new FlippingPolygon();
         polygon.addVertex((float) (x0 + radius0 * Math.sqrt(3) / 2), (float) (y0 + radius0 * Math.sqrt(3) / 2));
         polygon.addVertex((float) (x0 - radius0 * Math.sqrt(3) / 2), (float) (y0 + radius0 * Math.sqrt(3) / 2));
