@@ -27,10 +27,10 @@ public class ErrorMosaicBuilder extends MosaicBuilder {
 
         float mosaicSize = 0.5f  / QUADS_PER_ROW;
         Polygon polygon = new FlippingPolygon();
-        polygon.addVertex(offsetX - mosaicSize, offsetY);
-        polygon.addVertex(offsetX, offsetY - mosaicSize);
-        polygon.addVertex(offsetX + mosaicSize, offsetY);
-        polygon.addVertex(offsetX, offsetY + mosaicSize);
+        addVertex(polygon, offsetX - mosaicSize, offsetY, 1);
+        addVertex(polygon, offsetX, offsetY - mosaicSize, 1);
+        addVertex(polygon, offsetX + mosaicSize, offsetY, 1);
+        addVertex(polygon, offsetX, offsetY + mosaicSize, 1);
         polygons.add(polygon);
 
         addCrossPaths(polygons, mosaicSize, offsetX, offsetY, -1, -1);
@@ -131,10 +131,10 @@ public class ErrorMosaicBuilder extends MosaicBuilder {
                 y4 = Math.max(minY, Math.min(maxY, y4));
                 Polygon polygon = new FlippingPolygon();
 
-                polygon.addVertex(x1 + smallTranslation(), y1 + smallTranslation());
-                polygon.addVertex(x2 + smallTranslation(), y2 + smallTranslation());
-                polygon.addVertex(x3 + smallTranslation(), y3 + smallTranslation());
-                polygon.addVertex(x4 + smallTranslation(), y4 + smallTranslation());
+                addVertex(polygon, x1, y1, 1);
+                addVertex(polygon, x2, y2, 1);
+                addVertex(polygon, x3, y3, 1);
+                addVertex(polygon, x4, y4, 1);
                 polygons.add(polygon);
             }
             r += Math.sqrt(2) * (mosaicSize + gap);
@@ -194,7 +194,7 @@ public class ErrorMosaicBuilder extends MosaicBuilder {
     private void addTrianglePath(List<Polygon> polygons, float x1, float y1, float x2, float y2, float x3, float y3){
         if (x1 < maxX && x1 > minX && y1 > minY && y1 < maxY) {
             Polygon polygon = new FlippingPolygon();
-            polygon.addVertex(x1 + smallTranslation(), y1 + smallTranslation());
+            addVertex(polygon, x1, y1, 1);
 
             float interp = 0.1f;
             float adjustedX = x2;
@@ -204,7 +204,7 @@ public class ErrorMosaicBuilder extends MosaicBuilder {
                 adjustedY = y2 * (1-interp) + y1 * interp;
                 interp += 0.1f;
             }
-            polygon.addVertex(adjustedX + smallTranslation(), adjustedY + smallTranslation());
+            addVertex(polygon, adjustedX, adjustedY, 1);
 
             interp = 0.1f;
             adjustedX = x3;
@@ -214,7 +214,7 @@ public class ErrorMosaicBuilder extends MosaicBuilder {
                 adjustedY = y3 * (1-interp) + y1 * interp;
                 interp += 0.1f;
             }
-            polygon.addVertex(adjustedX + smallTranslation(), adjustedY + smallTranslation());
+            addVertex(polygon, adjustedX, adjustedY, 1);
             polygons.add(polygon);
         }
     }

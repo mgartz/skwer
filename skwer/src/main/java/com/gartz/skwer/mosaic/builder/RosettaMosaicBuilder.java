@@ -49,8 +49,7 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
         double theta = random.nextFloat() * 6;
         double thetaStep = 2 * Math.PI / numSides;
         for (int i=0; i<numSides; i++) {
-            polygon.addVertex((float) (x0 + r * Math.cos(theta) + smallTranslation() * 0.5f),
-                    (float) (y0 + r * Math.sin(theta) + smallTranslation() * 0.5f));
+            addVertex(polygon, (float) (x0 + r * Math.cos(theta)), (float) (y0 + r * Math.sin(theta)), 0.5f);
             theta += thetaStep;
         }
         polygons.add(polygon);
@@ -91,8 +90,8 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
             float y4 = y0 + y(adjustedSize, r1, theta21);
 
             Polygon polygon = new FlippingPolygon();
-            polygon.addVertex(x1 + smallTranslation(), y1 + smallTranslation());
-            polygon.addVertex(x2 + smallTranslation(), y2 + smallTranslation());
+            addVertex(polygon, x1, y1, 1);
+            addVertex(polygon, x2, y2, 1);
             if (isLastRow) {
                 double th1 = Math.atan2(Math.sin(theta12), Math.cos(theta12));
                 double th2 = Math.atan2(Math.sin(theta22), Math.cos(theta22));
@@ -101,16 +100,16 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
                 if (th2 < 0)
                     th2 += Math.PI * 2;
                 if (th1 < Math.PI / 4 && th2 > Math.PI / 4)
-                    polygon.addVertex(x0 - 0.5f + adjustedSize, y0 - 0.5f + adjustedSize);
+                    addVertex(polygon, x0 - 0.5f + adjustedSize, y0 - 0.5f + adjustedSize, 1);
                 else if (th1 < 3 * Math.PI / 4 && th2 > 3 * Math.PI / 4)
-                    polygon.addVertex(x0 - 0.5f, y0 - 0.5f + adjustedSize);
+                    addVertex(polygon, x0 - 0.5f, y0 - 0.5f + adjustedSize, 1);
                 else if (th1 < 5 * Math.PI / 4 && th2 > 5 * Math.PI / 4)
-                    polygon.addVertex(x0 - 0.5f, y0 - 0.5f);
+                    addVertex(polygon, x0 - 0.5f, y0 - 0.5f, 1);
                 else if (th1 < 7 * Math.PI / 4 && th2 > 7 * Math.PI / 4)
-                    polygon.addVertex(x0 - 0.5f + adjustedSize, y0 - 0.5f);
+                    addVertex(polygon, x0 - 0.5f + adjustedSize, y0 - 0.5f, 1);
             }
-            polygon.addVertex(x3 + smallTranslation(), y3 + smallTranslation());
-            polygon.addVertex(x4 + smallTranslation(), y4 + smallTranslation());
+            addVertex(polygon, x3, y3, 1);
+            addVertex(polygon, x4, y4, 1);
             polygons.add(polygon);
             theta += deformedDelta;
         }
