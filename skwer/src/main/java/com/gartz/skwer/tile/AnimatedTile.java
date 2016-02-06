@@ -20,8 +20,12 @@ public class AnimatedTile extends Tile {
     protected int currentColor = 0xFF000000;
     private int targetColor;
     private int origColor;
+
     protected boolean isAnimating;
     private long animationStartTime;
+
+    protected boolean isSelected;
+
     protected float currentDimFactor;
     private float origDimFactor;
     private float targetDimFactor;
@@ -92,6 +96,7 @@ public class AnimatedTile extends Tile {
             currentDimFactor = origDimFactor * (1-t) + targetDimFactor * t;
             game.requestRender();
         }
+
         if (hintCount > 0) {
             background.setColor(skwerGame.getHintColor(), 0);
             background.draw(mvpMatrix);
@@ -130,13 +135,10 @@ public class AnimatedTile extends Tile {
         unselect();
     }
 
-    private boolean isSelected;
-
     private void select(){
         isSelected = true;
         currentColor = ColorHelper.interp(COLORS[state], 0xFF000000, 0.7f);
         isAnimating = false;
-        isSelected = true;
         game.requestRender();
     }
     private void unselect(){

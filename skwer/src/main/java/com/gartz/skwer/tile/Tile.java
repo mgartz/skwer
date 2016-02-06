@@ -34,14 +34,13 @@ public abstract class Tile extends GameObject {
 
     @Override
     public void touch() {
-        // TODO hint pattern!
         skwerGame.cancelNextPuzzle();
     }
 
     @Override
     public void click() {
         if (active) {
-            doAction(-1);
+            nextStateOnPattern(-1);
             hintCount--;
             skwerGame.pressedTile();
         }
@@ -60,30 +59,38 @@ public abstract class Tile extends GameObject {
             skwerGame.setBaseState(state);
     }
 
-    public void doAction(int puzzleCountDelta) {
+    public void nextStateOnPattern(final int puzzleCountDelta) {
+        doCommandOnPattern(new Command() {
+            @Override
+            public void call(Tile tile) {
+                tile.nextState(puzzleCountDelta);
+            }
+        });
+    }
+    protected void doCommandOnPattern(Command command) {
         if (state == 0){
             for (int i = Math.max(0, this.i - 1); i < Math.min(SkwerGame.NUM_TILES_X, this.i + 2); i++)
                 for (int j = Math.max(0, this.j - 1); j < Math.min(SkwerGame.NUM_TILES_Y, this.j + 2); j++)
                     if (i != this.i || j != this.j)
-                        skwerGame.tiles[i][j].nextColor(puzzleCountDelta);
+                        command.call(skwerGame.tiles[i][j]);
         }
         else if (state == 1){
             for (int i = 0; i < SkwerGame.NUM_TILES_X; i++)
                 if (i != this.i)
-                    skwerGame.tiles[i][j].nextColor(puzzleCountDelta);
+                    command.call(skwerGame.tiles[i][j]);
             for (int j = 0; j < SkwerGame.NUM_TILES_Y; j++)
                 if (j != this.j)
-                    skwerGame.tiles[i][j].nextColor(puzzleCountDelta);
+                    command.call(skwerGame.tiles[i][j]);
         }
         else if (state == 2){
             for (int n = 1; i - n >= 0 && j - n >= 0; n++)
-                skwerGame.tiles[i - n][j - n].nextColor(puzzleCountDelta);
+                command.call(skwerGame.tiles[i - n][j - n]);
             for (int n = 1; i - n >= 0 && j + n < SkwerGame.NUM_TILES_Y; n++)
-                skwerGame.tiles[i - n][j + n].nextColor(puzzleCountDelta);
+                command.call(skwerGame.tiles[i - n][j + n]);
             for (int n = 1; i + n < SkwerGame.NUM_TILES_X && j - n >= 0; n++)
-                skwerGame.tiles[i + n][j - n].nextColor(puzzleCountDelta);
+                command.call(skwerGame.tiles[i + n][j - n]);
             for (int n = 1; i + n < SkwerGame.NUM_TILES_X && j + n < SkwerGame.NUM_TILES_Y; n++)
-                skwerGame.tiles[i + n][j + n].nextColor(puzzleCountDelta);
+                command.call(skwerGame.tiles[i + n][j + n]);
         }
     }
     public void setState(int state, int puzzleCountDelta, boolean isUserAction){
@@ -98,9 +105,13 @@ public abstract class Tile extends GameObject {
         hintCount++;
     }
 
-    protected void nextColor(int puzzleCountDelta){
+    protected void nextState(int puzzleCountDelta){
         setState(state + 1, puzzleCountDelta, true);
     }
 
     protected abstract void updateToCurrentState(boolean animated);
+
+    public interface Command {
+        void call(Tile tile);
+    }
 }

@@ -72,8 +72,8 @@ public class PuzzleMaker {
                 editor.putInt("puzzle_" + (i * 2 + 1), y);
                 editor.putInt("state_" + i, tiles[x][y].state);
 
-                tiles[x][y].doAction(1);
-                tiles[x][y].doAction(0);
+                tiles[x][y].nextStateOnPattern(1);
+                tiles[x][y].nextStateOnPattern(0);
             }
             else
                 i--;
@@ -105,8 +105,8 @@ public class PuzzleMaker {
             int x = lastPuzzle.get(i*2);
             int y = lastPuzzle.get(i*2+1);
 
-            tiles[x][y].doAction(1);
-            tiles[x][y].doAction(0);
+            tiles[x][y].nextStateOnPattern(1);
+            tiles[x][y].nextStateOnPattern(0);
 
             if (numRepeats >= 2)
                 tiles[x][y].addHintCount();
