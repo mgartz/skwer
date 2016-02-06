@@ -27,23 +27,24 @@ public class AnimatedTile extends Tile {
 
     private Mosaic background;
 
-    public AnimatedTile(Game game, int x, int y, float x0, float y0) {
-        super(game, x, y, x0, y0);
+    public AnimatedTile(Game game, int i, int j, float x, float y) {
+        super(game, i, j, x, y);
 
-        setupBackground(x0, y0);
+        setupBackground(x, y);
     }
 
-    private void setupBackground(float x0, float y0) {
+    private void setupBackground(float x, float y) {
         background = new Mosaic();
 
         Polygon backgroundPoly = new Polygon();
         float size = 0.5f * (1 + SkwerGame.GAP);
-        backgroundPoly.addVertex(x0 - size, y0 - size);
-        backgroundPoly.addVertex(x0 - size, y0 + size);
-        backgroundPoly.addVertex(x0 + size, y0 + size);
-        backgroundPoly.addVertex(x0 + size, y0 - size);
+        backgroundPoly.addVertex(x - size, y - size);
+        backgroundPoly.addVertex(x - size, y + size);
+        backgroundPoly.addVertex(x + size, y + size);
+        backgroundPoly.addVertex(x + size, y - size);
         ArrayList<Polygon> polygons = new ArrayList<>();
         polygons.add(backgroundPoly);
+
         background.setQuads(polygons);
         background.setColor(0xFFFFFFFF, 0);
         background.randomizeColorDeltas(0);
@@ -58,8 +59,11 @@ public class AnimatedTile extends Tile {
             else
                 targetDimFactor = puzzleCount == 0 ? 0.75f : 0.5f;
         }
-        else
-            targetDimFactor = 0.75f * (Math.abs(x - SkwerGame.NUM_TILES_X / 2f + 0.5f) / SkwerGame.NUM_TILES_X + Math.abs(y - SkwerGame.NUM_TILES_Y / 2f + 0.5f) / SkwerGame.NUM_TILES_Y);
+        else {
+            float xDist = Math.abs(i - SkwerGame.NUM_TILES_X / 2f + 0.5f) / SkwerGame.NUM_TILES_X;
+            float yDist = Math.abs(j - SkwerGame.NUM_TILES_Y / 2f + 0.5f) / SkwerGame.NUM_TILES_Y;
+            targetDimFactor = 0.75f * (xDist + yDist);
+        }
         if (animated) {
             origColor = currentColor;
             origDimFactor = currentDimFactor;
@@ -130,7 +134,7 @@ public class AnimatedTile extends Tile {
 
     private void select(){
         isSelected = true;
-        currentColor =(ColorHelper.interp(COLORS[state], 0xff000000, 0.7f));
+        currentColor = ColorHelper.interp(COLORS[state], 0xFF000000, 0.7f);
         isAnimating = false;
         isSelected = true;
         game.requestRender();

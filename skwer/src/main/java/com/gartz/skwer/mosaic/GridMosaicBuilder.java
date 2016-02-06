@@ -36,9 +36,9 @@ public class GridMosaicBuilder extends MosaicBuilder{
             for (int j=0; j<QUADS_PER_ROW; j++){
                 Polygon polygon = new FlippingPolygon();
                 polygon.addVertex(vertices[i][j][0] + strokeSize + smallTranslation(), vertices[i][j][1] + strokeSize + smallTranslation());
-                polygon.addVertex(vertices[i][j + 1][0] + strokeSize + smallTranslation(), vertices[i][j + 1][1] - strokeSize + smallTranslation());
-                polygon.addVertex(vertices[i + 1][j + 1][0] - strokeSize + smallTranslation(), vertices[i + 1][j + 1][1] - strokeSize + smallTranslation());
-                polygon.addVertex(vertices[i + 1][j][0] - strokeSize + smallTranslation(), vertices[i + 1][j][1] + strokeSize + smallTranslation());
+                polygon.addVertex(vertices[i][j+1][0] + strokeSize + smallTranslation(), vertices[i][j+1][1] - strokeSize + smallTranslation());
+                polygon.addVertex(vertices[i+1][j+1][0] - strokeSize + smallTranslation(), vertices[i+1][j+1][1] - strokeSize + smallTranslation());
+                polygon.addVertex(vertices[i+1][j][0] - strokeSize + smallTranslation(), vertices[i+1][j][1] + strokeSize + smallTranslation());
                 polygons.add(polygon);
             }
 

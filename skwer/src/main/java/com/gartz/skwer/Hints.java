@@ -27,8 +27,9 @@ public class Hints {
             return 0xFF000000;
         else if (t < HINT_BACKGROUND_PHASE_1_PERIOD + HINT_BACKGROUND_PHASE_2_PERIOD) {
             t -= HINT_BACKGROUND_PHASE_1_PERIOD;
-            return ColorHelper.interp(0xFF000000, HINT_COLOR,
-                    (float) (HINT_BACKGROND_COLOR_AMP * (0.5 - 0.5 * Math.cos(HINT_BACKGROUND_NUM_BEATS * t * 2 * Math.PI / HINT_BACKGROUND_PHASE_2_PERIOD))));
+            double rx = 0.5f * (1 - Math.cos(HINT_BACKGROUND_NUM_BEATS * t * 2 * Math.PI / HINT_BACKGROUND_PHASE_2_PERIOD));
+            float x = (float) (HINT_BACKGROND_COLOR_AMP * rx);
+            return ColorHelper.interp(0xFF000000, HINT_COLOR, x);
         }
         else {
             hintAnimationTimeStart += HINT_BACKGROUND_PHASE_1_PERIOD + HINT_BACKGROUND_PHASE_2_PERIOD;

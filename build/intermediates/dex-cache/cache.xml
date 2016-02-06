@@ -2,13 +2,6 @@
 <items version="2" >
 
     <item
-        jar="/Users/gartz/Desktop/showcase/skwer_android/skwer/skwer/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
-        <dex dex="/Users/gartz/Desktop/showcase/skwer_android/skwer/skwer/build/intermediates/pre-dexed/debug/classes-464105255a6be081700700075c8aa42fb61f9b84.jar" />
-    </item>
-    <item
         jar="/Users/gartz/Desktop/showcase/skwer_android/skwer/skwer/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
         jumboMode="false"
         revision="23.0.1"
@@ -16,11 +9,11 @@
         <dex dex="/Users/gartz/Desktop/showcase/skwer_android/skwer/skwer/build/intermediates/pre-dexed/debug/internal_impl-23.1.1-a3d78ef72944640314267045846bd081febe6b04.jar" />
     </item>
     <item
-        jar="/Users/gartz/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
+        jar="/Users/gartz/Desktop/showcase/skwer_android/skwer/skwer/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
-        <dex dex="/Users/gartz/Desktop/showcase/skwer_android/skwer/skwer/build/intermediates/pre-dexed/debug/support-annotations-23.1.1-768be0cf044ccc95b731fb29fa89cb9291d2c9c8.jar" />
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="/Users/gartz/Desktop/showcase/skwer_android/skwer/skwer/build/intermediates/pre-dexed/debug/classes-464105255a6be081700700075c8aa42fb61f9b84.jar" />
     </item>
     <item
         jar="/Users/gartz/Desktop/showcase/skwer_android/skwer/skwer/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
@@ -28,6 +21,13 @@
         revision="23.0.1"
         sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
         <dex dex="/Users/gartz/Desktop/showcase/skwer_android/skwer/skwer/build/intermediates/pre-dexed/debug/classes-41614786b3b02ba6832dfcbc265d7e2a0f88afd3.jar" />
+    </item>
+    <item
+        jar="/Users/gartz/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="/Users/gartz/Desktop/showcase/skwer_android/skwer/skwer/build/intermediates/pre-dexed/debug/support-annotations-23.1.1-768be0cf044ccc95b731fb29fa89cb9291d2c9c8.jar" />
     </item>
 
 </items>

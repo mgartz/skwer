@@ -17,19 +17,19 @@ public abstract class Tile extends GameObject {
     public int puzzleCount;
     public boolean active = true;
 
-    protected int x;
-    protected int y;
+    protected int i;
+    protected int j;
 
     protected SkwerGame skwerGame;
 
-    public Tile(Game game, int x, int y, float x0, float y0) {
+    public Tile(Game game, int i, int j, float x, float y) {
         super(game);
         skwerGame = (SkwerGame) game;
 
-        this.x = x;
-        this.y = y;
+        this.i = i;
+        this.j = j;
 
-        setBounds(x0 - 0.5f, x0 + 0.5f, y0 - 0.5f, y0 + 0.5f);
+        setBounds(x - 0.5f, x + 0.5f, y - 0.5f, y + 0.5f);
     }
 
     @Override
@@ -50,9 +50,9 @@ public abstract class Tile extends GameObject {
     @Override
     public void longClick() {
         super.longClick();
-        if (y == 0) {
-            if (x < SkwerGame.NUM_TILES_X - 1)
-                skwerGame.makePuzzle(x + 3);
+        if (j == 0) {
+            if (i < SkwerGame.NUM_TILES_X - 1)
+                skwerGame.makePuzzle(i + 3);
             else
                 skwerGame.resetLastPuzzle(true);
         }
@@ -62,28 +62,28 @@ public abstract class Tile extends GameObject {
 
     public void doAction(int puzzleCountDelta) {
         if (state == 0){
-            for (int i = Math.max(0, x-1); i < Math.min(SkwerGame.NUM_TILES_X, x+2); i++)
-                for (int j = Math.max(0, y-1); j < Math.min(SkwerGame.NUM_TILES_Y, y+2); j++)
-                    if (i != x || j != y)
+            for (int i = Math.max(0, this.i - 1); i < Math.min(SkwerGame.NUM_TILES_X, this.i + 2); i++)
+                for (int j = Math.max(0, this.j - 1); j < Math.min(SkwerGame.NUM_TILES_Y, this.j + 2); j++)
+                    if (i != this.i || j != this.j)
                         skwerGame.tiles[i][j].nextColor(puzzleCountDelta);
         }
         else if (state == 1){
             for (int i = 0; i < SkwerGame.NUM_TILES_X; i++)
-                if (i != x)
-                    skwerGame.tiles[i][y].nextColor(puzzleCountDelta);
+                if (i != this.i)
+                    skwerGame.tiles[i][j].nextColor(puzzleCountDelta);
             for (int j = 0; j < SkwerGame.NUM_TILES_Y; j++)
-                if (j != y)
-                    skwerGame.tiles[x][j].nextColor(puzzleCountDelta);
+                if (j != this.j)
+                    skwerGame.tiles[i][j].nextColor(puzzleCountDelta);
         }
         else if (state == 2){
-            for (int n = 1; x-n >= 0 && y-n >= 0; n++)
-                skwerGame.tiles[x-n][y-n].nextColor(puzzleCountDelta);
-            for (int n = 1; x-n >= 0 && y+n < SkwerGame.NUM_TILES_Y; n++)
-                skwerGame.tiles[x-n][y+n].nextColor(puzzleCountDelta);
-            for (int n = 1; x+n < SkwerGame.NUM_TILES_X && y-n >= 0; n++)
-                skwerGame.tiles[x+n][y-n].nextColor(puzzleCountDelta);
-            for (int n = 1; x+n < SkwerGame.NUM_TILES_X && y+n < SkwerGame.NUM_TILES_Y; n++)
-                skwerGame.tiles[x+n][y+n].nextColor(puzzleCountDelta);
+            for (int n = 1; i - n >= 0 && j - n >= 0; n++)
+                skwerGame.tiles[i - n][j - n].nextColor(puzzleCountDelta);
+            for (int n = 1; i - n >= 0 && j + n < SkwerGame.NUM_TILES_Y; n++)
+                skwerGame.tiles[i - n][j + n].nextColor(puzzleCountDelta);
+            for (int n = 1; i + n < SkwerGame.NUM_TILES_X && j - n >= 0; n++)
+                skwerGame.tiles[i + n][j - n].nextColor(puzzleCountDelta);
+            for (int n = 1; i + n < SkwerGame.NUM_TILES_X && j + n < SkwerGame.NUM_TILES_Y; n++)
+                skwerGame.tiles[i + n][j + n].nextColor(puzzleCountDelta);
         }
     }
     public void setState(int state, int puzzleCountDelta, boolean isUserAction){

@@ -28,9 +28,9 @@ public class RosettaMosaicBuilder extends MosaicBuilder {
         float radius8 = 0.8f;
 
         float thetaOffset = (float) Math.PI;
-        addCircularPaths(polygons, offsetX, offsetY, radius7, radius8, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 3.0), true);
-        addCircularPaths(polygons, offsetX, offsetY, radius5, radius6, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 2.5), false);
-        addCircularPaths(polygons, offsetX, offsetY, radius3, radius4, 2f, thetaOffset + random.nextFloat()*6, (int) (QUADS_PER_ROW * 1.8), false);
+        addCircularPaths(polygons, offsetX, offsetY, radius7, radius8, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 3.0), true);
+        addCircularPaths(polygons, offsetX, offsetY, radius5, radius6, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 2.5), false);
+        addCircularPaths(polygons, offsetX, offsetY, radius3, radius4, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 1.8), false);
         addCircularPaths(polygons, offsetX, offsetY, radius1, radius2, 2f, thetaOffset + random.nextFloat() * 6, (int) (QUADS_PER_ROW * 1.5), false);
 
         addCenterQuad(polygons, offsetX, offsetY, radius0);

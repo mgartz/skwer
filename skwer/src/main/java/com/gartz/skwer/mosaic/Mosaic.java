@@ -80,10 +80,10 @@ public class Mosaic {
                     GLES20.GL_FRAGMENT_SHADER,
                     GameGLRenderer.FRAGMENT_SHADER_CODE);
 
-            program = GLES20.glCreateProgram();             // create empty OpenGL Program
-            GLES20.glAttachShader(program, vertexShader);   // add the vertex shader to program
-            GLES20.glAttachShader(program, fragmentShader); // add the fragment shader to program
-            GLES20.glLinkProgram(program);                  // create OpenGL program executables
+            program = GLES20.glCreateProgram();
+            GLES20.glAttachShader(program, vertexShader);
+            GLES20.glAttachShader(program, fragmentShader);
+            GLES20.glLinkProgram(program);
         }
     }
 

@@ -67,7 +67,9 @@ public class SkwerGame extends Game {
     private void makeGameTiles(GameObject root) {
         for (int i=0; i< NUM_TILES_X; i++)
             for (int j=0; j< NUM_TILES_Y; j++) {
-                tiles[i][j] = new MosaicTile(this, i, j, i * (1 + GAP) - (NUM_TILES_X - 1) * (1 + GAP) / 2f, j * (1 + GAP) - (NUM_TILES_Y - 1) * (1 + GAP) / 2f);
+                float x = i * (1 + GAP) - (NUM_TILES_X - 1) * (1 + GAP) / 2f;
+                float y = j * (1 + GAP) - (NUM_TILES_Y - 1) * (1 + GAP) / 2f;
+                tiles[i][j] = new MosaicTile(this, i, j, x, y);
                 root.addChild(tiles[i][j]);
             }
     }
