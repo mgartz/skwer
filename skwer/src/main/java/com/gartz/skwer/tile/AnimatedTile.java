@@ -60,9 +60,9 @@ public class AnimatedTile extends Tile {
         targetColor = COLORS[state];
         if (skwerGame.isInPuzzle()) {
             if (active)
-                targetDimFactor = puzzleCount == 0 ? 0.25f : 0;
+                targetDimFactor = puzzleCount == 0 ? 0.3f : 0;
             else
-                targetDimFactor = puzzleCount == 0 ? 0.75f : 0.5f;
+                targetDimFactor = puzzleCount == 0 ? 0.9f : 0.6f;
         }
         else {
             float xDist = Math.abs(i - SkwerGame.NUM_TILES_X / 2f + 0.5f) / SkwerGame.NUM_TILES_X;
